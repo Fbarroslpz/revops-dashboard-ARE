@@ -10,44 +10,52 @@ Fecha: Enero 2026
 import os
 import sys
 import json
-import requests
+import gspread
+from google.oauth2.service_account import Credentials
 from datetime import datetime
 
 # ID del Google Sheet
 SHEET_ID = "1E15l2Ac6EJsMEWS5SaOJnQHkNs6VQISBF1XfZ4NfrK4"
 SHEET_NAME = "ACT comercial"
 
-# API URL para leer el sheet públicamente (sin autenticación)
-# Usamos la API v4 de Google Sheets con formato JSON
-API_URL = f"https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/{SHEET_NAME}!A1:AI21?key={{API_KEY}}"
+# Scopes necesarios para Google Sheets API
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 
-def read_sheet_public():
+def read_sheet_with_service_account():
     """
-    Lee el Google Sheet usando la URL pública de exportación
-    Formato: CSV directo desde Google Sheets
+    Lee el Google Sheet usando Service Account
     """
     try:
-        # URL para exportar como CSV
-        export_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
+        # Cargar credenciales
+        credentials_path = 'config/google_credentials.json'
 
-        print(f"📥 Descargando datos del Google Sheet...")
-        response = requests.get(export_url, timeout=30)
-        response.raise_for_status()
+        if not os.path.exists(credentials_path):
+            print(f"❌ No se encontró {credentials_path}")
+            print("💡 Asegúrate de que el archivo de credenciales existe")
+            sys.exit(1)
 
-        # Parsear CSV
-        import csv
-        import io
+        print(f"🔐 Cargando credenciales desde {credentials_path}...")
+        creds = Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
 
-        csv_data = response.content.decode('utf-8')
-        reader = csv.reader(io.StringIO(csv_data))
-        rows = list(reader)
+        # Autenticar con gspread
+        client = gspread.authorize(creds)
 
-        print(f"✅ Descargado {len(rows)} filas")
-        return rows
+        print(f"📥 Abriendo Google Sheet...")
+        sheet = client.open_by_key(SHEET_ID)
+        worksheet = sheet.worksheet(SHEET_NAME)
+
+        # Obtener todos los valores
+        print(f"📊 Descargando datos...")
+        all_values = worksheet.get_all_values()
+
+        print(f"✅ Descargado {len(all_values)} filas")
+        return all_values
 
     except Exception as e:
         print(f"❌ Error leyendo sheet: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 
@@ -181,7 +189,7 @@ def main():
     print(f"\n📅 Buscando datos para: {yesterday.strftime('%d/%m/%Y')} (AYER)")
 
     # Leer sheet
-    rows = read_sheet_public()
+    rows = read_sheet_with_service_account()
 
     # Buscar columna para ayer
     target_col = find_column_for_date(rows, yesterday)
