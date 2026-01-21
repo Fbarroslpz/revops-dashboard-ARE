@@ -222,8 +222,8 @@ jobs:
 
       - name: 💾 Commit y push de datos
         run: |
-          # Agregar solo los archivos de datos (NO config con credenciales)
-          git add data/*.json
+          # Agregar solo latest.json para el dashboard
+          git add data/latest.json
 
           # Agregar logs si existen
           git add logs/*.log 2>/dev/null || true
