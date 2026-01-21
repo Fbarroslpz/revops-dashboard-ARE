@@ -20,300 +20,82 @@ env:
 
 jobs:
   extract-and-update:
-    name: 🔄 Extraer datos y actualizar dashboard
+    name: 📥 Extraer datos y actualizar dashboard
     runs-on: ubuntu-latest
 
     steps:
-      # ========================================
-      # 1. SETUP - Código y Entorno
-      # ========================================
-      - name: 📥 Checkout código
+      # ==========================================
+      # 1. SETUP - Preparación del ambiente
+      # ==========================================
+      - name: 🔐 Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Historial completo para mejor debugging
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v5
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'  # Cache de dependencias para velocidad
+          cache: 'pip'
 
-      - name: 📦 Instalar dependencias
+      - name: 📦 Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ========================================
-      # 2. CONFIGURACIÓN - Archivos temporales
-      # ========================================
-      - name: ⚙️ Crear configuración temporal con credenciales
-        env:
-          HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+      - name: 🔑 Setup Google Service Account credentials
         run: |
-          # Crear config.yaml temporal con API keys desde secrets
-          cat > config/config.yaml << 'EOFCONFIG'
-          # Configuración del proyecto RevOps Dashboard - ARE
-          # ⚠️ GENERADO AUTOMÁTICAMENTE - NO EDITAR MANUALMENTE
-
-          hubspot:
-            api_key: "${{ secrets.HUBSPOT_API_KEY }}"
-            account_id: "50226191"
-
-          google_sheets:
-            informe_diario_id: "1E15l2Ac6EJsMEWS5SaOJnQHkNs6VQISBF1XfZ4NfrK4"
-            archivo_looker_id: "1Xsj3BFUand7o1XXiZf-1HI77iu6ysd6rstQXX1tFpME"
-            worksheet_name: "ACT comercial"
-            editor_email: "dixolivos@gmail.com"
-
-          google_calendar:
-            calendar_id: "tomas@advisorrealestate.cl"
-            ical_url: "https://calendar.google.com/calendar/ical/tomas%40advisorrealestate.cl/public/basic.ics"
-            color_mapping:
-              "8": "Teresa"
-              "2": "Daniela"
-              "9": "Azul"
-            no_show_colors:
-              - "6"
-              - "11"
-            robot_title_pattern: "Asesoría Inmobiliaria"
-            human_title_pattern: "Reunion"
-
-          extraction:
-            timezone: "America/Santiago"
-            days_back: ${{ github.event.inputs.days_back || 1 }}
-
-          alerts:
-            cpl_max: 6000
-            show_up_rate_min: 0.60
-            conversion_rate_min: 0.10
-
-          dashboard:
-            port: 8080
-            auto_refresh_seconds: 300
-          EOFCONFIG
-
-          # Crear credenciales de Google Service Account
+          mkdir -p config
           echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT }}' > config/google_credentials.json
 
-          # Verificar que los archivos se crearon
-          echo "✅ Archivos de configuración creados:"
-          ls -lh config/
-
-      # ========================================
-      # 3. VALIDACIÓN - Verificar setup
-      # ========================================
-      - name: 🔍 Verificar configuración y credenciales
+      - name: ⚙️ Configure Git
         run: |
-          echo "🔍 Verificando setup..."
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Verificar que config.yaml existe y tiene contenido
-          if [ ! -f "config/config.yaml" ]; then
-            echo "❌ ERROR: config.yaml no existe"
-            exit 1
-          fi
-
-          # Verificar que Google credentials existe
-          if [ ! -f "config/google_credentials.json" ]; then
-            echo "❌ ERROR: google_credentials.json no existe"
-            exit 1
-          fi
-
-          # Verificar que HubSpot API key no está vacía
-          if ! grep -q "api_key:" config/config.yaml; then
-            echo "❌ ERROR: HubSpot API key no configurada"
-            exit 1
-          fi
-
-          echo "✅ Configuración verificada correctamente"
-
-          # Ejecutar script de verificación si existe
-          if [ -f "scripts/verify_setup.py" ]; then
-            python scripts/verify_setup.py || true
-          fi
-
-      # ========================================
-      # 4. EXTRACCIÓN - Ejecutar scripts
-      # ========================================
-      - name: 🗓️ Extraer datos de Google Calendar
-        id: calendar
+      # ==========================================
+      # 2. EXTRACT - Extracción de datos
+      # ==========================================
+      - name: 📊 Ejecutar script de extracción de Google Sheet
         run: |
-          echo "🗓️ Extrayendo reuniones de Google Calendar..."
-          python scripts/calendar_extractor.py 2>&1 | tee logs/calendar_extraction.log
+          echo "==========================================="
+          echo "📥 EXTRAYENDO DATOS DE GOOGLE SHEET"
+          echo "==========================================="
+          python3 scripts/read_sheet_to_json.py
+          echo ""
+          echo "✅ Extracción completada"
+          echo ""
+          echo "📄 Contenido de latest.json:"
+          cat data/latest.json
 
-          # Capturar exit code
-          CALENDAR_EXIT=$?
-          echo "calendar_exit_code=$CALENDAR_EXIT" >> $GITHUB_OUTPUT
-
-          if [ $CALENDAR_EXIT -ne 0 ]; then
-            echo "⚠️ Extracción de Calendar falló con código $CALENDAR_EXIT"
-          else
-            echo "✅ Extracción de Calendar completada"
-          fi
-
-      - name: 📊 Extraer datos de HubSpot
-        id: hubspot
+      # ==========================================
+      # 3. COMMIT - Actualizar repositorio
+      # ==========================================
+      - name: 💾 Commit y Push de latest.json
         run: |
-          echo "📊 Extrayendo datos de HubSpot..."
-          python scripts/main_extractor.py 2>&1 | tee logs/main_extraction.log
-
-          # Capturar exit code
-          HUBSPOT_EXIT=$?
-          echo "hubspot_exit_code=$HUBSPOT_EXIT" >> $GITHUB_OUTPUT
-
-          if [ $HUBSPOT_EXIT -ne 0 ]; then
-            echo "❌ Extracción de HubSpot falló con código $HUBSPOT_EXIT"
-            exit 1
-          else
-            echo "✅ Extracción de HubSpot completada"
-          fi
-
-      # ========================================
-      # 5. PROCESAMIENTO - Datos y archivos
-      # ========================================
-      - name: 💾 Guardar datos extraídos
-        run: |
-          echo "💾 Procesando datos extraídos..."
-
-          # Buscar el archivo de extracción más reciente
-          LATEST_FILE=$(ls -t data/extracted_*.json 2>/dev/null | head -1 || echo "")
-
-          if [ -z "$LATEST_FILE" ]; then
-            echo "❌ ERROR: No se encontró archivo de extracción"
-            exit 1
-          fi
-
-          echo "📄 Archivo encontrado: $LATEST_FILE"
-
-          # Copiar a latest.json para el dashboard
-          cp "$LATEST_FILE" data/latest.json
-
-          # Mostrar preview de los datos
-          echo "📊 Preview de los datos:"
-          cat data/latest.json | python -m json.tool | head -30
-
-          echo "✅ Datos guardados correctamente"
-
-      - name: 📝 Actualizar Google Sheet
-        if: success()
-        run: |
-          echo "📝 Actualizando Google Sheet..."
-
-          if [ -f "scripts/sheet_updater.py" ]; then
-            python scripts/sheet_updater.py 2>&1 | tee logs/sheet_update.log
-
-            SHEET_EXIT=$?
-            if [ $SHEET_EXIT -ne 0 ]; then
-              echo "⚠️ Actualización de Sheet falló (no crítico)"
-            else
-              echo "✅ Google Sheet actualizado correctamente"
-            fi
-          else
-            echo "⚠️ Script sheet_updater.py no encontrado (saltando)"
-          fi
-
-      # ========================================
-      # 6. COMMIT - Guardar resultados
-      # ========================================
-      - name: 🔐 Configurar Git
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions Bot"
-
-      - name: 💾 Commit y push de datos
-        run: |
-          # Agregar solo latest.json para el dashboard
           git add data/latest.json
 
-          # Agregar logs si existen
-          git add logs/*.log 2>/dev/null || true
-
-          # Verificar si hay cambios
           if git diff --staged --quiet; then
-            echo "ℹ️ No hay cambios para commitear"
+            echo "⚠️ No hay cambios en latest.json"
           else
-            # Crear commit con fecha
-            COMMIT_DATE=$(date +'%Y-%m-%d %H:%M %Z')
-            git commit -m "📊 Datos extraídos - $COMMIT_DATE"
-
-            # Push con retry
-            for i in {1..3}; do
-              if git push; then
-                echo "✅ Push exitoso"
-                break
-              else
-                echo "⚠️ Push falló (intento $i/3), reintentando..."
-                sleep 5
-              fi
-            done
+            git commit -m "🤖 Update: latest.json con datos del $(date +'%d/%m/%Y')"
+            git push
+            echo "✅ Cambios commiteados y pusheados"
           fi
 
-      # ========================================
-      # 7. NOTIFICACIONES - Resumen
-      # ========================================
-      - name: 📢 Resumen de ejecución
-        if: always()
-        run: |
-          echo "========================================"
-          echo "📊 RESUMEN DE EXTRACCIÓN"
-          echo "========================================"
-          echo "Fecha: $(date +'%Y-%m-%d %H:%M:%S %Z')"
-          echo "Repositorio: ${{ github.repository }}"
-          echo "Workflow: ${{ github.workflow }}"
-          echo "Run ID: ${{ github.run_id }}"
-          echo ""
-
-          if [ -f "data/latest.json" ]; then
-            echo "✅ Datos extraídos correctamente"
-            echo ""
-            echo "📈 Métricas:"
-            python -c "
-          import json
-          with open('data/latest.json', 'r') as f:
-              data = json.load(f)
-
-          leads = data.get('leads_creados', 0)
-          reuniones = data.get('reuniones', {})
-          total_agendadas = sum(s.get('agendadas', 0) for s in reuniones.values())
-          total_realizadas = sum(s.get('realizadas', 0) for s in reuniones.values())
-          show_up = (total_realizadas / total_agendadas * 100) if total_agendadas > 0 else 0
-
-          print(f'  Leads creados: {leads}')
-          print(f'  Reuniones agendadas: {total_agendadas}')
-          print(f'  Reuniones realizadas: {total_realizadas}')
-          print(f'  Show-up rate: {show_up:.1f}%')
-          print()
-          print('📊 Por setter:')
-          for setter, metrics in reuniones.items():
-              agendadas = metrics.get('agendadas', 0)
-              realizadas = metrics.get('realizadas', 0)
-              rate = (realizadas / agendadas * 100) if agendadas > 0 else 0
-              print(f'  {setter}: {realizadas}/{agendadas} ({rate:.1f}%)')
-          "
-          else
-            echo "❌ No se generaron datos"
-          fi
-
-          echo ""
-          echo "========================================"
-
-      # ========================================
-      # 8. CLEANUP - Limpiar archivos sensibles
-      # ========================================
+      # ==========================================
+      # 4. CLEANUP - Limpiar archivos sensibles
+      # ==========================================
       - name: 🧹 Limpiar archivos sensibles
         if: always()
         run: |
           echo "🧹 Limpiando archivos temporales con credenciales..."
-
-          # Eliminar archivos con credenciales (NO commitear)
-          rm -f config/config.yaml
           rm -f config/google_credentials.json
-
           echo "✅ Cleanup completado"
 
-      # ========================================
-      # 9. UPLOAD - Artefactos para debugging
-      # ========================================
+      # ==========================================
+      # 5. UPLOAD - Artefactos para debugging
+      # ==========================================
       - name: 📤 Upload logs como artefactos
         if: always()
         uses: actions/upload-artifact@v4
