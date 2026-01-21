@@ -1,5 +1,32 @@
 {
   "fecha": "2026-01-20",
-  "leads_creados": 0,
-  "reuniones": {}
+  "leads_creados": 87,
+  "reuniones": {
+    "Daniela": {
+      "agendadas": 12,
+      "realizadas": 9,
+      "llamadas": 73
+    },
+    "Teresa": {
+      "agendadas": 10,
+      "realizadas": 7,
+      "llamadas": 72
+    },
+    "Matias": {
+      "agendadas": 6,
+      "realizadas": 5,
+      "llamadas": 88
+    },
+    "Robot": {
+      "agendadas": 3,
+      "realizadas": 2,
+      "llamadas": 87
+    }
+  },
+  "totales": {
+    "reuniones_agendadas": 36,
+    "reuniones_realizadas": 9,
+    "clientes_con_reserva": 0,
+    "reservas": 0
+  }
 }
