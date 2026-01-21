@@ -21,11 +21,12 @@ sys.path.append(os.path.dirname(__file__))
 from calendar_extractor import CalendarExtractor
 
 # Configurar logging
+os.makedirs('logs', exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/mnt/user-data/outputs/revops-dashboard-ARE/logs/main_extraction.log'),
+        logging.FileHandler('logs/main_extraction.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -97,7 +98,7 @@ class HubSpotExtractor:
             return 0
 
 
-def load_config(config_path: str = "/mnt/user-data/outputs/revops-dashboard-ARE/config/config.yaml") -> dict:
+def load_config(config_path: str = "config/config.yaml") -> dict:
     """Carga la configuración desde archivo YAML"""
     try:
         with open(config_path, 'r') as f:
@@ -164,7 +165,8 @@ def main():
     }
     
     # Guardar en JSON para debugging
-    output_file = f"/mnt/user-data/outputs/revops-dashboard-ARE/data/extracted_{yesterday.strftime('%Y%m%d')}.json"
+    os.makedirs('data', exist_ok=True)
+    output_file = f"data/extracted_{yesterday.strftime('%Y%m%d')}.json"
     with open(output_file, 'w') as f:
         json.dump(consolidated_data, f, indent=2)
     logger.info(f"💾 Datos guardados en: {output_file}")

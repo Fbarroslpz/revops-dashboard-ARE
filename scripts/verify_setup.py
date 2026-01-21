@@ -48,8 +48,8 @@ def check_dependencies():
 def check_config():
     """Verifica archivo de configuración"""
     print("\n⚙️  Verificando configuración...")
-    config_path = '/mnt/user-data/outputs/revops-dashboard-ARE/config/config.yaml'
-    
+    config_path = 'config/config.yaml'
+
     if not os.path.exists(config_path):
         print("   ❌ config.yaml no encontrado")
         return False, None
@@ -124,19 +124,17 @@ def check_calendar(ical_url):
 def check_directories():
     """Verifica estructura de directorios"""
     print("\n📁 Verificando directorios...")
-    
-    base_path = '/mnt/user-data/outputs/revops-dashboard-ARE'
+
     dirs = ['logs', 'data', 'scripts', 'config']
-    
+
     all_ok = True
     for dir_name in dirs:
-        dir_path = os.path.join(base_path, dir_name)
-        if os.path.exists(dir_path):
+        if os.path.exists(dir_name):
             print(f"   ✅ {dir_name}/")
         else:
             print(f"   ⚠️  {dir_name}/ (creando...)")
-            os.makedirs(dir_path, exist_ok=True)
-    
+            os.makedirs(dir_name, exist_ok=True)
+
     return True
 
 def main():

@@ -19,11 +19,12 @@ from icalendar import Calendar
 import pytz
 
 # Configurar logging
+os.makedirs('logs', exist_ok=True)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/mnt/user-data/outputs/revops-dashboard-ARE/logs/calendar_extraction.log'),
+        logging.FileHandler('logs/calendar_extraction.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -201,7 +202,7 @@ class CalendarExtractor:
         return metrics
 
 
-def load_config(config_path: str = "/mnt/user-data/outputs/revops-dashboard-ARE/config/config.yaml") -> dict:
+def load_config(config_path: str = "config/config.yaml") -> dict:
     """Carga la configuración desde archivo YAML"""
     try:
         with open(config_path, 'r') as f:
