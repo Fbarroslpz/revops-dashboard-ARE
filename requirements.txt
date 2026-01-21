@@ -1,0 +1,27 @@
+# Dependencias del proyecto RevOps Dashboard - ARE
+
+# HubSpot API
+requests==2.31.0
+urllib3==2.1.0
+
+# Google Sheets
+gspread==5.12.0
+oauth2client==4.1.3
+
+# Google Calendar (iCal)
+icalendar==5.0.11
+pytz==2023.3
+
+# Configuración
+pyyaml==6.0.1
+
+# Data processing
+pandas==2.1.4
+numpy==1.26.2
+
+# Dashboard web
+flask==3.0.0
+plotly==5.18.0
+
+# Utilidades
+python-dateutil==2.8.2

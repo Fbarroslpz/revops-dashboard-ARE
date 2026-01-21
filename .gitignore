@@ -1,0 +1,35 @@
+# Credenciales
+config/google_credentials.json
+config/config.yaml
+
+# Logs
+logs/*.log
+*.log
+
+# Data temporal
+data/*.json
+data/cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+*.bak
+*.backup

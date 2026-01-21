@@ -1,0 +1,50 @@
+═══════════════════════════════════════════════════════════
+   ⚡ EJECUTA ESTOS COMANDOS AHORA - NO LEAS, SOLO COPIA/PEGA
+═══════════════════════════════════════════════════════════
+
+PASO 1: Crear repositorio en GitHub
+────────────────────────────────────
+Abre: https://github.com/new
+
+Configuración:
+  • Repository name: revops-dashboard-are
+  • Visibility: PRIVATE ⚠️
+  • NO marcar nada más
+
+Click "Create repository"
+
+
+PASO 2: Ejecutar en Terminal (copia TODO de una vez)
+────────────────────────────────────────────────────
+
+cd /Users/felipebarros/Desktop/revops-dashboard-ARE && \
+git config user.email "fbarroslpz@gmail.com" && \
+git config user.name "Felipe Barros" && \
+rm -f .git/index.lock && \
+git add -A && \
+git commit -m "🎉 Initial commit - RevOps Dashboard ARE" && \
+git branch -M main && \
+echo "✅ Archivos preparados. Ahora copia el siguiente comando:"
+
+
+PASO 3: Agregar tu usuario de GitHub
+────────────────────────────────────
+REEMPLAZA 'TU_USUARIO' con tu usuario real de GitHub:
+
+git remote add origin https://github.com/TU_USUARIO/revops-dashboard-are.git && \
+git push -u origin main
+
+
+═══════════════════════════════════════════════════════════
+
+Si pide password:
+  • Username: tu usuario de GitHub
+  • Password: Crea un token en https://github.com/settings/tokens/new
+             (Permisos: repo + workflow)
+
+═══════════════════════════════════════════════════════════
+
+DESPUÉS: Abre QUICK_SETUP.md para los pasos 4 y 5
+         (Configurar Secrets + Deploy en Vercel)
+
+═══════════════════════════════════════════════════════════

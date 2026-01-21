@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard ARE - RevOps</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .last-update {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .metric-change.negative {
+            color: #e74c3c;
+        }
+
+        .metric-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            opacity: 0.15;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #c00;
+        }
+
+        .success-alert {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #28a745;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .setter-detail {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setter-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .setter-stats {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-value {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>📊 Dashboard RevOps - ARE</h1>
+                <div class="last-update">
+                    Última actualización: <span id="lastUpdate">Cargando...</span>
+                    <span id="autoRefreshIndicator" class="badge badge-success" style="display: none;">Auto-refresh ✓</span>
+                </div>
+            </div>
+            <button class="refresh-btn" onclick="loadData()" id="refreshBtn">
+                🔄 Actualizar
+            </button>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            Cargando datos...
+        </div>
+
+        <div id="error" style="display: none;"></div>
+
+        <div id="content" style="display: none;">
+            <!-- Métricas principales -->
+            <div class="metrics-grid" id="metricsGrid"></div>
+
+            <!-- Gráficos principales -->
+            <div class="grid-2">
+                <div class="chart-container">
+                    <h3 class="chart-title">
+                        📞 Reuniones por Setter
+                        <span id="totalMeetingsBadge" class="badge badge-success"></span>
+                    </h3>
+                    <canvas id="settersChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">
+                        📈 Show-up Rate por Setter
+                        <span id="avgShowupBadge" class="badge badge-success"></span>
+                    </h3>
+                    <canvas id="showupChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Detalle de setters -->
+            <div class="chart-container">
+                <h3 class="chart-title">👥 Detalle por Setter</h3>
+                <div id="setterDetails"></div>
+            </div>
+
+            <!-- Gráficos adicionales -->
+            <div class="grid-3">
+                <div class="chart-container">
+                    <h3 class="chart-title">🎯 Conversión</h3>
+                    <canvas id="conversionChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">📊 Distribución</h3>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">⚡ Performance</h3>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Info adicional -->
+            <div class="info-box">
+                💡 <strong>Nota:</strong> Los datos se actualizan automáticamente cada 5 minutos.
+                El dashboard muestra la información del día anterior.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Dashboard RevOps - Advisor Real Estate (ARE)</p>
+        <p>Desarrollado por Felipe Barros - Vulpes Consulting</p>
+    </footer>
+
+    <script>
+        let charts = {};
+
+        // URL del JSON generado
+        const DATA_URL = '../data/latest.json';
+
+        // Configuración de colores
+        const COLORS = {
+            primary: 'rgba(102, 126, 234, 0.8)',
+            success: 'rgba(39, 174, 96, 0.8)',
+            warning: 'rgba(241, 196, 15, 0.8)',
+            danger: 'rgba(231, 76, 60, 0.8)',
+            info: 'rgba(52, 152, 219, 0.8)',
+            purple: 'rgba(155, 89, 182, 0.8)'
+        };
+
+        async function loadData() {
+            try {
+                const refreshBtn = document.getElementById('refreshBtn');
+                refreshBtn.disabled = true;
+                refreshBtn.textContent = '⏳ Cargando...';
+
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('content').style.display = 'none';
+
+                const response = await fetch(DATA_URL);
+                if (!response.ok) throw new Error('No se pudo cargar los datos');
+
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+                renderDashboard(data);
+                updateLastUpdate(data.fecha);
+
+                // Mostrar indicador de auto-refresh
+                document.getElementById('autoRefreshIndicator').style.display = 'inline-block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').innerHTML = `
+                    <div class="error">
+                        ❌ <strong>Error cargando datos:</strong> ${error.message}<br><br>
+                        💡 <strong>Posibles causas:</strong><br>
+                        • El archivo <code>latest.json</code> no existe todavía<br>
+                        • El script de extracción aún no se ha ejecutado<br>
+                        • Problema de conectividad<br><br>
+                        <strong>Solución:</strong> Ejecuta manualmente el workflow en GitHub Actions
+                    </div>
+                `;
+            } finally {
+                const refreshBtn = document.getElementById('refreshBtn');
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = '🔄 Actualizar';
+            }
+        }
+
+        function renderDashboard(data) {
+            renderMetrics(data);
+            renderSettersChart(data.reuniones);
+            renderShowupChart(data.reuniones);
+            renderSetterDetails(data.reuniones);
+            renderConversionChart(data);
+            renderDistributionChart(data.reuniones);
+            renderPerformanceChart(data.reuniones);
+        }
+
+        function renderMetrics(data) {
+            const reuniones = data.reuniones || {};
+            const totalAgendadas = Object.values(reuniones).reduce((sum, s) => sum + (s.agendadas || 0), 0);
+            const totalRealizadas = Object.values(reuniones).reduce((sum, s) => sum + (s.realizadas || 0), 0);
+            const showUpRate = totalAgendadas > 0 ? (totalRealizadas / totalAgendadas * 100) : 0;
+            const leadsCreados = data.leads_creados || 0;
+
+            const metrics = [
+                {
+                    label: 'Leads Creados',
+                    value: leadsCreados,
+                    change: '',
+                    positive: null,
+                    icon: '👥'
+                },
+                {
+                    label: 'Reuniones Agendadas',
+                    value: totalAgendadas,
+                    change: '',
+                    positive: null,
+                    icon: '📅'
+                },
+                {
+                    label: 'Reuniones Realizadas',
+                    value: totalRealizadas,
+                    change: `${totalAgendadas - totalRealizadas} no shows`,
+                    positive: totalRealizadas === totalAgendadas,
+                    icon: '✅'
+                },
+                {
+                    label: 'Show-up Rate',
+                    value: showUpRate.toFixed(1) + '%',
+                    change: showUpRate >= 70 ? '✅ Sobre target (70%)' : '⚠️ Bajo target (70%)',
+                    positive: showUpRate >= 70,
+                    icon: '📈'
+                }
+            ];
+
+            const html = metrics.map(m => `
+                <div class="metric-card">
+                    <div class="metric-icon">${m.icon}</div>
+                    <div class="metric-label">${m.label}</div>
+                    <div class="metric-value">${m.value}</div>
+                    <div class="metric-change ${m.positive === true ? '' : m.positive === false ? 'negative' : ''}">${m.change}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('metricsGrid').innerHTML = html;
+
+            // Actualizar badges
+            document.getElementById('totalMeetingsBadge').textContent = `Total: ${totalAgendadas}`;
+            const avgShowup = showUpRate.toFixed(1);
+            document.getElementById('avgShowupBadge').textContent = `Promedio: ${avgShowup}%`;
+            document.getElementById('avgShowupBadge').className = 'badge ' + (showUpRate >= 70 ? 'badge-success' : 'badge-warning');
+        }
+
+        function renderSettersChart(reuniones) {
+            const ctx = document.getElementById('settersChart');
+            if (!ctx) return;
+
+            const setters = Object.keys(reuniones);
+            const agendadas = setters.map(s => reuniones[s].agendadas || 0);
+            const realizadas = setters.map(s => reuniones[s].realizadas || 0);
+
+            if (charts.setters) charts.setters.destroy();
+
+            charts.setters = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: setters,
+                    datasets: [
+                        {
+                            label: 'Agendadas',
+                            data: agendadas,
+                            backgroundColor: COLORS.primary,
+                            borderColor: COLORS.primary.replace('0.8', '1'),
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Realizadas',
+                            data: realizadas,
+                            backgroundColor: COLORS.success,
+                            borderColor: COLORS.success.replace('0.8', '1'),
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        const setter = context.label;
+                                        const realizadas = reuniones[setter].realizadas || 0;
+                                        const agendadas = reuniones[setter].agendadas || 0;
+                                        const rate = agendadas > 0 ? (realizadas / agendadas * 100).toFixed(1) : 0;
+                                        return `Show-up: ${rate}%`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+        }
+
+        function renderShowupChart(reuniones) {
+            const ctx = document.getElementById('showupChart');
+            if (!ctx) return;
+
+            const setters = Object.keys(reuniones);
+            const showupRates = setters.map(s => {
+                const agendadas = reuniones[s].agendadas || 0;
+                const realizadas = reuniones[s].realizadas || 0;
+                return agendadas > 0 ? (realizadas / agendadas * 100) : 0;
+            });
+
+            if (charts.showup) charts.showup.destroy();
+
+            charts.showup = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: setters,
+                    datasets: [{
+                        label: 'Show-up Rate (%)',
+                        data: showupRates,
+                        backgroundColor: showupRates.map(rate =>
+                            rate >= 70 ? COLORS.success : rate >= 50 ? COLORS.warning : COLORS.danger
+                        ),
+                        borderColor: showupRates.map(rate =>
+                            rate >= 70 ? COLORS.success.replace('0.8', '1') :
+                            rate >= 50 ? COLORS.warning.replace('0.8', '1') :
+                            COLORS.danger.replace('0.8', '1')
+                        ),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Show-up: ' + context.parsed.y.toFixed(1) + '%';
+                                },
+                                afterLabel: function(context) {
+                                    const setter = context.label;
+                                    const agendadas = reuniones[setter].agendadas || 0;
+                                    const realizadas = reuniones[setter].realizadas || 0;
+                                    return `${realizadas}/${agendadas} reuniones`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSetterDetails(reuniones) {
+            const setters = Object.keys(reuniones);
+            const html = setters.map(setter => {
+                const data = reuniones[setter];
+                const agendadas = data.agendadas || 0;
+                const realizadas = data.realizadas || 0;
+                const noShows = agendadas - realizadas;
+                const rate = agendadas > 0 ? (realizadas / agendadas * 100).toFixed(1) : 0;
+                const badgeClass = rate >= 70 ? 'badge-success' : rate >= 50 ? 'badge-warning' : 'badge-danger';
+
+                return `
+                    <div class="setter-detail">
+                        <div class="setter-name">${setter}</div>
+                        <div class="setter-stats">
+                            Agendadas: <strong>${agendadas}</strong> |
+                            Realizadas: <strong>${realizadas}</strong> |
+                            No-shows: <strong>${noShows}</strong>
+                            <span class="badge ${badgeClass}">${rate}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('setterDetails').innerHTML = html;
+        }
+
+        function renderConversionChart(data) {
+            const ctx = document.getElementById('conversionChart');
+            if (!ctx) return;
+
+            const reuniones = data.reuniones || {};
+            const totalAgendadas = Object.values(reuniones).reduce((sum, s) => sum + (s.agendadas || 0), 0);
+            const leadsCreados = data.leads_creados || 0;
+
+            if (charts.conversion) charts.conversion.destroy();
+
+            charts.conversion = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Leads sin reunión', 'Leads con reunión'],
+                    datasets: [{
+                        data: [Math.max(0, leadsCreados - totalAgendadas), totalAgendadas],
+                        backgroundColor: [COLORS.warning, COLORS.success],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = leadsCreados;
+                                    const value = context.parsed;
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${context.label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderDistributionChart(reuniones) {
+            const ctx = document.getElementById('distributionChart');
+            if (!ctx) return;
+
+            const setters = Object.keys(reuniones);
+            const agendadas = setters.map(s => reuniones[s].agendadas || 0);
+
+            if (charts.distribution) charts.distribution.destroy();
+
+            charts.distribution = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: setters,
+                    datasets: [{
+                        data: agendadas,
+                        backgroundColor: [
+                            COLORS.primary,
+                            COLORS.success,
+                            COLORS.warning,
+                            COLORS.purple
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = agendadas.reduce((a, b) => a + b, 0);
+                                    const value = context.parsed;
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${context.label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderPerformanceChart(reuniones) {
+            const ctx = document.getElementById('performanceChart');
+            if (!ctx) return;
+
+            const setters = Object.keys(reuniones);
+            const efficiency = setters.map(s => {
+                const agendadas = reuniones[s].agendadas || 0;
+                const realizadas = reuniones[s].realizadas || 0;
+                return realizadas; // Performance = reuniones realizadas
+            });
+
+            if (charts.performance) charts.performance.destroy();
+
+            charts.performance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: setters,
+                    datasets: [{
+                        label: 'Reuniones Realizadas',
+                        data: efficiency,
+                        backgroundColor: COLORS.primary.replace('0.8', '0.3'),
+                        borderColor: COLORS.primary,
+                        borderWidth: 2,
+                        pointBackgroundColor: COLORS.primary,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: COLORS.primary
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateLastUpdate(date) {
+            const dateObj = new Date(date);
+            const formatted = dateObj.toLocaleDateString('es-CL', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('lastUpdate').textContent = formatted;
+        }
+
+        // Cargar datos al inicio
+        loadData();
+
+        // Auto-refresh cada 5 minutos
+        setInterval(loadData, 300000);
+    </script>
+</body>
+</html>

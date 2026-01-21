@@ -1,0 +1,34 @@
+🎉 Initial commit - RevOps Dashboard ARE
+
+✨ Features:
+- Automated data extraction from HubSpot and Google Calendar
+- Real-time dashboard with Chart.js visualizations
+- Google Sheets auto-update integration
+- GitHub Actions daily cron (07:00 AM Santiago)
+- Vercel deployment ready
+
+📊 Automated Metrics:
+- Leads created (HubSpot)
+- Meetings scheduled/completed per setter
+- Automated no-show detection
+- Show-up rates calculation
+
+🎨 Smart Features:
+- Setter identification by calendar color
+- Robot vs Human distinction
+- Responsive design (6 charts)
+- Auto-refresh every 5 minutes
+
+📚 Documentation:
+- Complete deployment guide
+- Google Service Account setup guide
+- Troubleshooting guide
+- Changelog
+
+⏱️ Impact:
+- Time saved: ~13-17 hours/month
+- Manual work reduced from 45-60 min/day to 8 min/day
+
+Author: Felipe Barros - Vulpes Consulting
+Client: Advisor Real Estate (ARE)
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
