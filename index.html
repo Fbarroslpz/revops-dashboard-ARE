@@ -715,7 +715,7 @@
             html += generarFila('Daniela', [], true);
             html += generarFila('Dani Llamadas realizadas', data.datos.map(d => d.reuniones?.Daniela?.llamadas || 0));
             html += generarFila('Dani reuniones agendadas', data.datos.map(d => d.reuniones?.Daniela?.agendadas || 0));
-            html += generarFila('Tere reuniones realizadas', data.datos.map(d => d.reuniones?.Daniela?.realizadas || 0));
+            html += generarFila('Dani reuniones realizadas', data.datos.map(d => d.reuniones?.Daniela?.realizadas || 0));
 
             // Teresa
             html += generarFila('Teresa', [], true);
@@ -725,15 +725,15 @@
 
             // Matias
             html += generarFila('Matias', [], true);
-            html += generarFila('Mat Llamadas realizadas', data.datos.map(d => d.reuniones?.Matias?.llamadas || 0));
-            html += generarFila('Mat reuniones agendadas', data.datos.map(d => d.reuniones?.Matias?.agendadas || 0));
-            html += generarFila('Mat reuniones realizadas', data.datos.map(d => d.reuniones?.Matias?.realizadas || 0));
+            html += generarFila('Matias Llamadas realizadas', data.datos.map(d => d.reuniones?.Matias?.llamadas || 0));
+            html += generarFila('Matias reuniones agendadas', data.datos.map(d => d.reuniones?.Matias?.agendadas || 0));
+            html += generarFila('Matias reuniones realizadas', data.datos.map(d => d.reuniones?.Matias?.realizadas || 0));
 
             // Robot
             html += generarFila('Robot', [], true);
             html += generarFila('ROBOT Llamadas realiz', data.datos.map(d => d.reuniones?.Robot?.llamadas || 0));
             html += generarFila('ROBOT reuniones agend', data.datos.map(d => d.reuniones?.Robot?.agendadas || 0));
-            html += generarFila('ROBOT reuniones agend', data.datos.map(d => d.reuniones?.Robot?.realizadas || 0));
+            html += generarFila('ROBOT reuniones realiz', data.datos.map(d => d.reuniones?.Robot?.realizadas || 0));
 
             // SECCIÓN: Leads
             html += generarFila('📥 LEADS QUE ENTRARON HOY', [], true);
