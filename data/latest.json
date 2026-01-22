@@ -1,11 +1,15 @@
 {
-  "fecha_actualizacion": "2026-01-22 00:18:36",
+  "fecha_actualizacion": "2026-01-22 03:40:17",
   "fecha_ultimo_dato": "2026-01-21",
   "total_dias": 31,
   "datos": [
     {
       "fecha": "2025-12-22",
       "leads_creados": 39,
+      "llamadas_realizadas": 0,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 191050,
+      "costo_por_lead": 4899.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 13,
@@ -38,6 +42,10 @@
     {
       "fecha": "2025-12-23",
       "leads_creados": 33,
+      "llamadas_realizadas": 15,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 114802,
+      "costo_por_lead": 3479.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 7,
@@ -70,6 +78,10 @@
     {
       "fecha": "2025-12-24",
       "leads_creados": 23,
+      "llamadas_realizadas": 23,
+      "reuniones_agendadas_dia": 1,
+      "inversion_campanas": 108737,
+      "costo_por_lead": 4728.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 6,
@@ -102,6 +114,10 @@
     {
       "fecha": "2025-12-25",
       "leads_creados": 49,
+      "llamadas_realizadas": 48,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 203661,
+      "costo_por_lead": 4156.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -134,6 +150,10 @@
     {
       "fecha": "2025-12-26",
       "leads_creados": 38,
+      "llamadas_realizadas": 38,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 181194,
+      "costo_por_lead": 4768.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 9,
@@ -166,6 +186,10 @@
     {
       "fecha": "2025-12-27",
       "leads_creados": 72,
+      "llamadas_realizadas": 72,
+      "reuniones_agendadas_dia": 0,
+      "inversion_campanas": 198166,
+      "costo_por_lead": 2752.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -198,6 +222,10 @@
     {
       "fecha": "2025-12-28",
       "leads_creados": 72,
+      "llamadas_realizadas": 72,
+      "reuniones_agendadas_dia": 0,
+      "inversion_campanas": 194736,
+      "costo_por_lead": 2705.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -230,6 +258,10 @@
     {
       "fecha": "2025-12-29",
       "leads_creados": 51,
+      "llamadas_realizadas": 50,
+      "reuniones_agendadas_dia": 5,
+      "inversion_campanas": 172415,
+      "costo_por_lead": 3381.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 12,
@@ -262,6 +294,10 @@
     {
       "fecha": "2025-12-30",
       "leads_creados": 44,
+      "llamadas_realizadas": 44,
+      "reuniones_agendadas_dia": 7,
+      "inversion_campanas": 159696,
+      "costo_por_lead": 3629.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 14,
@@ -294,6 +330,10 @@
     {
       "fecha": "2025-12-31",
       "leads_creados": 35,
+      "llamadas_realizadas": 35,
+      "reuniones_agendadas_dia": 5,
+      "inversion_campanas": 151078,
+      "costo_por_lead": 4317.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 8,
@@ -326,6 +366,10 @@
     {
       "fecha": "2026-01-01",
       "leads_creados": 64,
+      "llamadas_realizadas": 22,
+      "reuniones_agendadas_dia": 0,
+      "inversion_campanas": 205775,
+      "costo_por_lead": 3215.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -358,6 +402,10 @@
     {
       "fecha": "2026-01-02",
       "leads_creados": 77,
+      "llamadas_realizadas": 77,
+      "reuniones_agendadas_dia": 13,
+      "inversion_campanas": 223628,
+      "costo_por_lead": 2904.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 11,
@@ -390,6 +438,10 @@
     {
       "fecha": "2026-01-03",
       "leads_creados": 72,
+      "llamadas_realizadas": 72,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 241492,
+      "costo_por_lead": 3354.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -422,6 +474,10 @@
     {
       "fecha": "2026-01-04",
       "leads_creados": 107,
+      "llamadas_realizadas": 107,
+      "reuniones_agendadas_dia": 7,
+      "inversion_campanas": 308838,
+      "costo_por_lead": 2886.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -454,6 +510,10 @@
     {
       "fecha": "2026-01-05",
       "leads_creados": 62,
+      "llamadas_realizadas": 62,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 289642,
+      "costo_por_lead": 4672.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 11,
@@ -486,6 +546,10 @@
     {
       "fecha": "2026-01-06",
       "leads_creados": 51,
+      "llamadas_realizadas": 51,
+      "reuniones_agendadas_dia": 6,
+      "inversion_campanas": 255748,
+      "costo_por_lead": 5015.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 16,
@@ -518,6 +582,10 @@
     {
       "fecha": "2026-01-07",
       "leads_creados": 60,
+      "llamadas_realizadas": 60,
+      "reuniones_agendadas_dia": 9,
+      "inversion_campanas": 264739,
+      "costo_por_lead": 4412.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 8,
@@ -550,6 +618,10 @@
     {
       "fecha": "2026-01-08",
       "leads_creados": 66,
+      "llamadas_realizadas": 66,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 237644,
+      "costo_por_lead": 3601.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 9,
@@ -582,6 +654,10 @@
     {
       "fecha": "2026-01-09",
       "leads_creados": 55,
+      "llamadas_realizadas": 55,
+      "reuniones_agendadas_dia": 7,
+      "inversion_campanas": 253689,
+      "costo_por_lead": 4613.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 13,
@@ -614,6 +690,10 @@
     {
       "fecha": "2026-01-10",
       "leads_creados": 71,
+      "llamadas_realizadas": 71,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 267283,
+      "costo_por_lead": 3765.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -646,6 +726,10 @@
     {
       "fecha": "2026-01-11",
       "leads_creados": 71,
+      "llamadas_realizadas": 71,
+      "reuniones_agendadas_dia": 0,
+      "inversion_campanas": 295060,
+      "costo_por_lead": 4156.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -678,6 +762,10 @@
     {
       "fecha": "2026-01-12",
       "leads_creados": 95,
+      "llamadas_realizadas": 95,
+      "reuniones_agendadas_dia": 9,
+      "inversion_campanas": 292783,
+      "costo_por_lead": 3082.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 15,
@@ -710,6 +798,10 @@
     {
       "fecha": "2026-01-13",
       "leads_creados": 55,
+      "llamadas_realizadas": 55,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 362705,
+      "costo_por_lead": 6595.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 9,
@@ -742,6 +834,10 @@
     {
       "fecha": "2026-01-14",
       "leads_creados": 60,
+      "llamadas_realizadas": 60,
+      "reuniones_agendadas_dia": 1,
+      "inversion_campanas": 193516,
+      "costo_por_lead": 3225.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 15,
@@ -774,6 +870,10 @@
     {
       "fecha": "2026-01-15",
       "leads_creados": 76,
+      "llamadas_realizadas": 76,
+      "reuniones_agendadas_dia": 6,
+      "inversion_campanas": 158524,
+      "costo_por_lead": 2086.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 11,
@@ -806,6 +906,10 @@
     {
       "fecha": "2026-01-16",
       "leads_creados": 115,
+      "llamadas_realizadas": 115,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 293060,
+      "costo_por_lead": 2548.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -838,6 +942,10 @@
     {
       "fecha": "2026-01-17",
       "leads_creados": 92,
+      "llamadas_realizadas": 92,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 289838,
+      "costo_por_lead": 3150.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -870,6 +978,10 @@
     {
       "fecha": "2026-01-18",
       "leads_creados": 111,
+      "llamadas_realizadas": 111,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 301053,
+      "costo_por_lead": 2712.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -902,6 +1014,10 @@
     {
       "fecha": "2026-01-19",
       "leads_creados": 86,
+      "llamadas_realizadas": 86,
+      "reuniones_agendadas_dia": 13,
+      "inversion_campanas": 321661,
+      "costo_por_lead": 3740.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 15,
@@ -934,6 +1050,10 @@
     {
       "fecha": "2026-01-20",
       "leads_creados": 87,
+      "llamadas_realizadas": 87,
+      "reuniones_agendadas_dia": 7,
+      "inversion_campanas": 294841,
+      "costo_por_lead": 3389.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 12,
@@ -965,34 +1085,38 @@
     },
     {
       "fecha": "2026-01-21",
-      "leads_creados": 0,
+      "leads_creados": 92,
+      "llamadas_realizadas": 92,
+      "reuniones_agendadas_dia": 11,
+      "inversion_campanas": 235305,
+      "costo_por_lead": 2558.0,
       "reuniones": {
         "Daniela": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 14,
+          "realizadas": 14,
+          "llamadas": 65
         },
         "Teresa": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 10,
+          "realizadas": 10,
+          "llamadas": 58
         },
         "Matias": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 4,
+          "realizadas": 4,
+          "llamadas": 40
         },
         "Robot": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 5,
+          "realizadas": 5,
+          "llamadas": 92
         }
       },
       "totales": {
         "reuniones_agendadas": 51,
-        "reuniones_realizadas": 0,
-        "clientes_con_reserva": 0,
-        "reservas": 0
+        "reuniones_realizadas": 11,
+        "clientes_con_reserva": 3,
+        "reservas": 4
       }
     }
   ]
