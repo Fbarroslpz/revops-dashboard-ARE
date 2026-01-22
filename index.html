@@ -308,6 +308,116 @@
             font-size: 1.5rem;
         }
 
+        /* Navegación de pestañas */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Vista Sábana */
+        .sabana-view {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .sabana-view h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .sabana-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+            font-size: 0.85rem;
+        }
+
+        .sabana-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sabana-table th {
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .sabana-table tbody tr {
+            border-bottom: 1px solid #ecf0f1;
+            transition: background 0.2s;
+        }
+
+        .sabana-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .sabana-table td {
+            padding: 0.75rem;
+            color: #2c3e50;
+            white-space: nowrap;
+        }
+
+        .sabana-table td:first-child {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .sabana-section-header {
+            background: #f8f9fa !important;
+            font-weight: 700;
+            color: #2c3e50 !important;
+        }
+
+        .sabana-section-header td {
+            padding: 1rem 0.75rem !important;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         @media (max-width: 768px) {
             .charts-grid {
                 grid-template-columns: 1fr;
@@ -320,12 +430,47 @@
             .stat-card .value {
                 font-size: 2rem;
             }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                padding: 0.75rem 1rem;
+            }
+
+            .tooltip-text {
+                width: 200px;
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+
+            .sabana-view {
+                padding: 1rem;
+            }
+
+            .sabana-table {
+                font-size: 0.75rem;
+            }
+
+            .sabana-table th,
+            .sabana-table td {
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="loading" id="loading">Cargando datos...</div>
+
+        <!-- Navegación de pestañas -->
+        <div class="nav-tabs" id="navTabs" style="display: none;">
+            <button class="nav-tab active" onclick="switchView('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="switchView('sabana')">📋 Sábana</button>
+        </div>
+
+        <!-- Vista Dashboard -->
         <div id="dashboard" style="display: none;">
             <div class="header">
                 <div>
@@ -404,6 +549,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Vista Sábana -->
+        <div id="sabana" style="display: none;">
+            <div class="sabana-view">
+                <h2>📋 Sábana de Datos Completa</h2>
+                <div style="overflow-x: auto;">
+                    <table class="sabana-table" id="sabanaTable">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Leads Creados</th>
+                                <th>Llamadas Realizadas</th>
+                                <th>Reuniones Agendadas</th>
+                                <th>Reuniones Realizadas</th>
+                                <th>Clientes con Reserva</th>
+                                <th>Reservas</th>
+                                <th>Inversión</th>
+                                <th>CPL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sabanaTableBody">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -420,10 +592,12 @@
                 filteredData = JSON.parse(JSON.stringify(originalData));
 
                 document.getElementById('loading').style.display = 'none';
+                document.getElementById('navTabs').style.display = 'flex';
                 document.getElementById('dashboard').style.display = 'block';
 
                 initializeDateFilters();
                 renderDashboard();
+                renderSabana();
             } catch (error) {
                 document.getElementById('loading').textContent = 'Error al cargar los datos: ' + error.message;
             }
@@ -482,6 +656,106 @@
                 currency: 'CLP',
                 minimumFractionDigits: 0
             }).format(value);
+        }
+
+        // Cambiar entre vistas
+        function switchView(view) {
+            // Actualizar botones activos
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Mostrar/ocultar vistas
+            if (view === 'dashboard') {
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('sabana').style.display = 'none';
+            } else if (view === 'sabana') {
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('sabana').style.display = 'block';
+                renderSabana(); // Re-renderizar con datos filtrados
+            }
+        }
+
+        // Renderizar vista Sábana
+        function renderSabana() {
+            const data = filteredData;
+            const tbody = document.getElementById('sabanaTableBody');
+
+            // Obtener todos los setters únicos
+            const setters = {};
+            data.datos.forEach(dia => {
+                if (dia.setters) {
+                    Object.keys(dia.setters).forEach(setter => {
+                        if (!setters[setter]) {
+                            setters[setter] = true;
+                        }
+                    });
+                }
+            });
+
+            let html = '';
+
+            // Sección: Datos generales
+            html += '<tr class="sabana-section-header"><td colspan="9">📊 DATOS GENERALES</td></tr>';
+            data.datos.forEach(dia => {
+                const cpl = dia.leads_creados > 0 ? (dia.inversion / dia.leads_creados) : 0;
+                html += `
+                    <tr>
+                        <td>${dia.fecha}</td>
+                        <td>${dia.leads_creados || 0}</td>
+                        <td>${dia.llamadas_realizadas || 0}</td>
+                        <td>${dia.reuniones_agendadas || 0}</td>
+                        <td>${dia.reuniones_realizadas || 0}</td>
+                        <td>${dia.clientes_con_reserva || 0}</td>
+                        <td>${dia.reservas || 0}</td>
+                        <td>${formatCurrency(dia.inversion || 0)}</td>
+                        <td>${formatCurrency(cpl)}</td>
+                    </tr>
+                `;
+            });
+
+            // Sección: Setters
+            html += '<tr class="sabana-section-header"><td colspan="9">👥 SETTERS</td></tr>';
+            Object.keys(setters).forEach(setter => {
+                html += `<tr class="sabana-section-header"><td colspan="9">${setter}</td></tr>`;
+
+                data.datos.forEach(dia => {
+                    if (dia.setters && dia.setters[setter]) {
+                        const s = dia.setters[setter];
+                        html += `
+                            <tr>
+                                <td>${dia.fecha}</td>
+                                <td colspan="1">${s.llamadas_realizadas || 0} llamadas</td>
+                                <td colspan="1">${s.reuniones_agendadas || 0} agendadas</td>
+                                <td colspan="6">${s.reuniones_realizadas || 0} realizadas</td>
+                            </tr>
+                        `;
+                    }
+                });
+            });
+
+            // Sección: Leads que entraron hoy
+            html += '<tr class="sabana-section-header"><td colspan="9">📥 LEADS QUE ENTRARON HOY</td></tr>';
+            data.datos.forEach(dia => {
+                html += `
+                    <tr>
+                        <td>${dia.fecha}</td>
+                        <td colspan="8">${dia.leads_creados || 0} leads</td>
+                    </tr>
+                `;
+            });
+
+            // Sección: Leads creados
+            html += '<tr class="sabana-section-header"><td colspan="9">📊 LEADS CREADOS</td></tr>';
+            data.datos.forEach(dia => {
+                html += `
+                    <tr>
+                        <td>${dia.fecha}</td>
+                        <td colspan="8">${dia.leads_creados || 0} leads</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
         }
 
         function renderDashboard() {
