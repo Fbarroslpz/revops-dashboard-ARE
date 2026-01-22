@@ -346,7 +346,7 @@
         // Cargar datos desde GitHub
         async function loadData() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/Fbarroslpz/revops-dashboard-ARE/main/data/latest.json');
+                const response = await fetch('./data/latest.json');
                 if (!response.ok) throw new Error('Error al cargar datos');
                 originalData = await response.json();
                 filteredData = JSON.parse(JSON.stringify(originalData));
