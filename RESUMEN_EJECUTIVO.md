@@ -2,7 +2,7 @@
 
 ## Sistema de Automatización Completa para ARE
 
-**Creado por:** Felipe Barros - Vulpes Consulting  
+**Creado por:** Felipe Barros  
 **Cliente:** ARE (Advisor Real Estate)  
 **Fecha:** Enero 2026
 
@@ -250,7 +250,7 @@ no_show_colors:
 
 **Creador:** Felipe Barros  
 **Email:** fbarroslpz@gmail.com  
-**Empresa:** Vulpes Consulting SpA
+**Empresa:** Felipe Barros
 
 **Documentación:**
 - Inicio rápido: `QUICKSTART.md`

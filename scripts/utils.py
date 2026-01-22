@@ -3,7 +3,7 @@
 Utilidades comunes para los scripts de extracción
 Incluye retry logic, validaciones, y helpers
 
-Autor: Felipe Barros - Vulpes Consulting
+Autor: Felipe Barros
 Fecha: Enero 2026
 """
 

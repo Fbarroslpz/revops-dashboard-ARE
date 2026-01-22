@@ -3,7 +3,7 @@
 Script para leer el Google Sheet y generar latest.json
 Extrae TODOS los datos acumulados desde el inicio hasta AYER
 
-Autor: Felipe Barros - Vulpes Consulting
+Autor: Felipe Barros
 Fecha: Enero 2026
 """
 

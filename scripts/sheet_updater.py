@@ -3,7 +3,7 @@
 Actualizador de Google Sheet - Informe Diario ARE
 Usa acceso público del sheet (sin credenciales de Service Account)
 
-Autor: Felipe Barros - Vulpes Consulting
+Autor: Felipe Barros
 """
 
 import os

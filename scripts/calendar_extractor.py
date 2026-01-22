@@ -4,7 +4,7 @@ Extractor de Google Calendar vía feed iCal público
 Identifica reuniones por setter usando colores y títulos
 NO requiere autenticación OAuth
 
-Autor: Felipe Barros - Vulpes Consulting
+Autor: Felipe Barros
 Fecha: Enero 2026
 """
 

@@ -102,7 +102,7 @@ git commit -m "🎉 Initial commit - RevOps Dashboard ARE
 - Time saved: ~13-17 hours/month
 - Manual work reduced from 45-60 min/day to 8 min/day
 
-Author: Felipe Barros - Vulpes Consulting
+Author: Felipe Barros
 Client: Advisor Real Estate (ARE)
 Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 

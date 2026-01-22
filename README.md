@@ -134,9 +134,9 @@
 >
 > ## 👤 Autor
 >
-> **Felipe Barros** - Vulpes Consulting
+> **Felipe Barros**
 > Email: fbarroslpz@gmail.com
-> Cliente: Advisor Real Estate (ARE)
+> Proyecto: Advisor Real Estate (ARE)
 >
 > ---
 >

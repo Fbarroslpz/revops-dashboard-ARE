@@ -3,7 +3,7 @@
 Script principal de extracción de datos
 Integra HubSpot + Google Calendar + Google Sheets
 
-Autor: Felipe Barros - Vulpes Consulting
+Autor: Felipe Barros
 Fecha: Enero 2026
 """
 
