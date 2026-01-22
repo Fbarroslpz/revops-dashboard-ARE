@@ -725,8 +725,8 @@
 
             // Matias
             html += generarFila('Matias', [], true);
-            html += generarFila('Mas Llamadas realizadas', data.datos.map(d => d.reuniones?.Matias?.llamadas || 0));
-            html += generarFila('Mat reuniones agendadas', data.datos.map(d => d.reuniones?.Matias?.agendadas || 0));
+            html += generarFila('Matias Llamadas realizadas', data.datos.map(d => d.reuniones?.Matias?.llamadas || 0));
+            html += generarFila('Matias reuniones agendadas', data.datos.map(d => d.reuniones?.Matias?.agendadas || 0));
 
             // Robot
             html += generarFila('Robot', [], true);
@@ -734,11 +734,7 @@
             html += generarFila('ROBOT reuniones agend', data.datos.map(d => d.reuniones?.Robot?.agendadas || 0));
 
             // SECCIÓN: Leads que entraron hoy
-            html += generarFila('📥 LEADS QUE ENTRARON HOY', [], true);
-            html += generarFila('Leads que entraron hoy', data.datos.map(d => d.leads_creados || 0));
-
-            // SECCIÓN: Leads creados
-            html += generarFila('📊 LEADS CREADOS', [], true);
+            html += generarFila('📥 Leads que entraron hoy', [], true);
             html += generarFila('Leads creados', data.datos.map(d => d.leads_creados || 0));
             html += generarFila('llamadas realizadas', data.datos.map(d => d.llamadas_realizadas || 0));
             html += generarFila('reuniones agendadas', data.datos.map(d => d.totales?.reuniones_agendadas || 0));
