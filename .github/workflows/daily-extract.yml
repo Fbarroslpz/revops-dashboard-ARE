@@ -2,10 +2,12 @@ name: 📊 Extracción Diaria de Datos - RevOps ARE
 
 on:
   schedule:
-    # Ejecuta a las 09:30 AM Chile (12:30 UTC en verano, 12:30 UTC en invierno)
+    # Ejecuta a las 09:30 AM Chile TODO EL AÑO
     # Durante horario de verano chileno (Oct-Mar): 12:30 UTC = 09:30 CLT
-    # Durante horario de invierno chileno (Abr-Sep): 12:30 UTC = 08:30 CLT
-    - cron: '30 12 * * *'
+    # Durante horario de invierno chileno (Abr-Sep): 13:30 UTC = 09:30 CLT
+    # GitHub Actions ejecutará ambos, pero solo uno coincidirá con 09:30 AM Chile según la estación
+    - cron: '30 12 * * *'  # Verano (Oct-Mar)
+    - cron: '30 13 * * *'  # Invierno (Abr-Sep)
 
   # Permite ejecución manual desde GitHub Actions UI
   workflow_dispatch:
