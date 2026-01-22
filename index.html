@@ -137,6 +137,9 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
 
         .stat-card .value {
@@ -156,6 +159,71 @@
 
         .trend.negative {
             color: #e74c3c;
+        }
+
+        .stat-card {
+            position: relative;
+        }
+
+        .tooltip-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            position: absolute;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #2c3e50 transparent transparent transparent;
+        }
+
+        .stat-card:hover .tooltip-text,
+        .tooltip-icon:hover + .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .tooltip-text {
+                width: 200px;
+                font-size: 0.8rem;
+                padding: 10px;
+            }
         }
 
         .charts-grid {
@@ -451,7 +519,11 @@
                     <div class="trend">Período completo</div>
                 </div>
                 <div class="stat-card">
-                    <div class="label">Tasa Conversión Día</div>
+                    <div class="label">
+                        Tasa Conversión Día
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">Porcentaje de leads que agendaron reunión el mismo día que fueron creados.</span>
+                    </div>
                     <div class="value">${tasaConversionDia}%</div>
                     <div class="trend ${tasaConversionDia >= 20 ? 'positive' : 'negative'}">${tasaConversionDia >= 20 ? '✓ Objetivo alcanzado' : '⚠ Por debajo del objetivo'}</div>
                 </div>
