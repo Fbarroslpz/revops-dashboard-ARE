@@ -675,87 +675,81 @@
             }
         }
 
-        // Renderizar vista Sábana
+        // Renderizar vista Sábana (formato horizontal como Google Sheet)
         function renderSabana() {
             const data = filteredData;
             const tbody = document.getElementById('sabanaTableBody');
+            const thead = document.querySelector('#sabanaTable thead tr');
 
-            // Obtener todos los setters únicos
-            const setters = {};
+            // Generar encabezados con fechas
+            let headerHtml = '<th style="min-width: 200px;">Métrica</th>';
             data.datos.forEach(dia => {
-                if (dia.setters) {
-                    Object.keys(dia.setters).forEach(setter => {
-                        if (!setters[setter]) {
-                            setters[setter] = true;
-                        }
-                    });
-                }
+                headerHtml += `<th>${dia.fecha}</th>`;
             });
+            thead.innerHTML = headerHtml;
 
             let html = '';
 
-            // Sección: Datos generales
-            html += '<tr class="sabana-section-header"><td colspan="9">📊 DATOS GENERALES</td></tr>';
-            data.datos.forEach(dia => {
-                const inversion = dia.inversion || 0;
-                const leadsCreados = dia.leads_creados || 0;
-                const cpl = (inversion > 0 && leadsCreados > 0) ? (inversion / leadsCreados) : 0;
-                html += `
+            // Función auxiliar para generar fila
+            const generarFila = (label, valores, isHeader = false) => {
+                if (isHeader) {
+                    return `<tr class="sabana-section-header"><td colspan="${valores.length + 1}">${label}</td></tr>`;
+                }
+                return `
                     <tr>
-                        <td>${dia.fecha}</td>
-                        <td>${leadsCreados}</td>
-                        <td>${dia.llamadas_realizadas || 0}</td>
-                        <td>${dia.reuniones_agendadas || 0}</td>
-                        <td>${dia.reuniones_realizadas || 0}</td>
-                        <td>${dia.clientes_con_reserva || 0}</td>
-                        <td>${dia.reservas || 0}</td>
-                        <td>${formatCurrency(inversion)}</td>
-                        <td>${cpl > 0 ? formatCurrency(cpl) : '$0'}</td>
+                        <td><strong>${label}</strong></td>
+                        ${valores.map(v => `<td>${v}</td>`).join('')}
                     </tr>
                 `;
-            });
+            };
 
-            // Sección: Setters
-            html += '<tr class="sabana-section-header"><td colspan="9">👥 SETTERS</td></tr>';
-            Object.keys(setters).forEach(setter => {
-                html += `<tr class="sabana-section-header"><td colspan="9">${setter}</td></tr>`;
+            // SECCIÓN: Datos principales
+            html += generarFila('📊 MÉTRICAS PRINCIPALES', [], true);
+            html += generarFila('reuniones agendadas', data.datos.map(d => d.totales?.reuniones_agendadas || 0));
+            html += generarFila('reuniones realizadas', data.datos.map(d => d.totales?.reuniones_realizadas || 0));
+            html += generarFila('clientes con reserva', data.datos.map(d => d.totales?.clientes_con_reserva || 0));
+            html += generarFila('Reservas', data.datos.map(d => d.totales?.reservas || 0));
 
-                data.datos.forEach(dia => {
-                    if (dia.setters && dia.setters[setter]) {
-                        const s = dia.setters[setter];
-                        html += `
-                            <tr>
-                                <td>${dia.fecha}</td>
-                                <td colspan="1">${s.llamadas_realizadas || 0} llamadas</td>
-                                <td colspan="1">${s.reuniones_agendadas || 0} agendadas</td>
-                                <td colspan="6">${s.reuniones_realizadas || 0} realizadas</td>
-                            </tr>
-                        `;
-                    }
-                });
-            });
+            // SECCIÓN: Setters - Daniela
+            html += generarFila('👥 SETTERS', [], true);
+            html += generarFila('Daniela', [], true);
+            html += generarFila('Dani Llamadas realizadas', data.datos.map(d => d.reuniones?.Daniela?.llamadas || 0));
+            html += generarFila('Dani reuniones agendadas', data.datos.map(d => d.reuniones?.Daniela?.agendadas || 0));
+            html += generarFila('Tere reuniones realizadas', data.datos.map(d => d.reuniones?.Daniela?.realizadas || 0));
 
-            // Sección: Leads que entraron hoy
-            html += '<tr class="sabana-section-header"><td colspan="9">📥 LEADS QUE ENTRARON HOY</td></tr>';
-            data.datos.forEach(dia => {
-                html += `
-                    <tr>
-                        <td>${dia.fecha}</td>
-                        <td colspan="8">${dia.leads_creados || 0} leads</td>
-                    </tr>
-                `;
-            });
+            // Teresa
+            html += generarFila('Teresa', [], true);
+            html += generarFila('Tere Llamadas realizadas', data.datos.map(d => d.reuniones?.Teresa?.llamadas || 0));
+            html += generarFila('Tere reuniones agendadas', data.datos.map(d => d.reuniones?.Teresa?.agendadas || 0));
+            html += generarFila('Tere reuniones realizadas', data.datos.map(d => d.reuniones?.Teresa?.realizadas || 0));
 
-            // Sección: Leads creados
-            html += '<tr class="sabana-section-header"><td colspan="9">📊 LEADS CREADOS</td></tr>';
-            data.datos.forEach(dia => {
-                html += `
-                    <tr>
-                        <td>${dia.fecha}</td>
-                        <td colspan="8">${dia.leads_creados || 0} leads</td>
-                    </tr>
-                `;
-            });
+            // Matias
+            html += generarFila('Matias', [], true);
+            html += generarFila('Mat Llamadas realizadas', data.datos.map(d => d.reuniones?.Matias?.llamadas || 0));
+            html += generarFila('Mat reuniones agendadas', data.datos.map(d => d.reuniones?.Matias?.agendadas || 0));
+            html += generarFila('Mat reuniones realizadas', data.datos.map(d => d.reuniones?.Matias?.realizadas || 0));
+
+            // Robot
+            html += generarFila('Robot', [], true);
+            html += generarFila('ROBOT Llamadas realiz', data.datos.map(d => d.reuniones?.Robot?.llamadas || 0));
+            html += generarFila('ROBOT reuniones agend', data.datos.map(d => d.reuniones?.Robot?.agendadas || 0));
+            html += generarFila('ROBOT reuniones agend', data.datos.map(d => d.reuniones?.Robot?.realizadas || 0));
+
+            // SECCIÓN: Leads
+            html += generarFila('📥 LEADS QUE ENTRARON HOY', [], true);
+            html += generarFila('Leads que entraron hoy', data.datos.map(d => d.leads_creados || 0));
+
+            // SECCIÓN: Leads creados
+            html += generarFila('📊 LEADS CREADOS', [], true);
+            html += generarFila('Leads creados', data.datos.map(d => d.leads_creados || 0));
+            html += generarFila('llamadas realizadas', data.datos.map(d => d.llamadas_realizadas || 0));
+            html += generarFila('reuniones agendadas', data.datos.map(d => d.totales?.reuniones_agendadas || 0));
+            html += generarFila('Costo por lead', data.datos.map(d => {
+                const inversion = d.inversion_campanas || 0;
+                const leads = d.leads_creados || 0;
+                const cpl = (inversion > 0 && leads > 0) ? (inversion / leads) : 0;
+                return cpl > 0 ? formatCurrency(cpl) : '$0';
+            }));
 
             tbody.innerHTML = html;
         }
