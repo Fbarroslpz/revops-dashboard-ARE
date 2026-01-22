@@ -737,11 +737,13 @@
             html += generarFila('📥 Leads que entraron hoy', [], true);
             html += generarFila('Leads creados', data.datos.map(d => d.leads_creados || 0));
             html += generarFila('llamadas realizadas', data.datos.map(d => d.llamadas_realizadas || 0));
-            html += generarFila('reuniones agendadas', data.datos.map(d => d.totales?.reuniones_agendadas || 0));
-            html += generarFila('Costo por lead', data.datos.map(d => {
+            html += generarFila('reuniones agendadas', data.datos.map(d => d.reuniones_agendadas_dia || 0));
+            html += generarFila('inversión en campañas', data.datos.map(d => {
                 const inversion = d.inversion_campanas || 0;
-                const leads = d.leads_creados || 0;
-                const cpl = (inversion > 0 && leads > 0) ? (inversion / leads) : 0;
+                return inversion > 0 ? formatCurrency(inversion) : '$0';
+            }));
+            html += generarFila('Costo por lead', data.datos.map(d => {
+                const cpl = d.costo_por_lead || 0;
                 return cpl > 0 ? formatCurrency(cpl) : '$0';
             }));
 
