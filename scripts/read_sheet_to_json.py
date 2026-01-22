@@ -148,6 +148,28 @@ def extract_data_from_column(rows, col_index):
             except:
                 return 0
 
+        def get_money_value(row_index):
+            try:
+                if row_index < len(rows) and col_index < len(rows[row_index]):
+                    val = rows[row_index][col_index].strip()
+                    # Remover símbolos de moneda y puntos/comas
+                    val = val.replace('$', '').replace('.', '').replace(',', '').strip()
+                    return int(val) if val else 0
+                return 0
+            except:
+                return 0
+
+        def get_decimal_value(row_index):
+            try:
+                if row_index < len(rows) and col_index < len(rows[row_index]):
+                    val = rows[row_index][col_index].strip()
+                    # Remover símbolos de moneda y convertir coma a punto
+                    val = val.replace('$', '').replace('.', '').replace(',', '.').strip()
+                    return float(val) if val else 0.0
+                return 0.0
+            except:
+                return 0.0
+
         # Filas según la estructura del sheet (0-indexed):
         # Fila 3 = índice 2, Fila 4 = índice 3, etc.
         reuniones_agendadas = get_value(2)  # Fila 3
@@ -166,11 +188,19 @@ def extract_data_from_column(rows, col_index):
         robot_reuniones = get_value(16)  # Fila 17
 
         leads_creados = get_value(20)  # Fila 21
+        llamadas_realizadas = get_value(21)  # Fila 22
+        reuniones_agendadas_dia = get_value(22)  # Fila 23
+        inversion_campanas = get_money_value(23)  # Fila 24
+        costo_por_lead = get_decimal_value(24)  # Fila 25
 
         # Construir estructura de datos
         data = {
             "fecha": fecha.strftime("%Y-%m-%d"),
             "leads_creados": leads_creados,
+            "llamadas_realizadas": llamadas_realizadas,
+            "reuniones_agendadas_dia": reuniones_agendadas_dia,
+            "inversion_campanas": inversion_campanas,
+            "costo_por_lead": round(costo_por_lead, 3),
             "reuniones": {
                 "Daniela": {
                     "agendadas": dani_reuniones,
