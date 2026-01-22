@@ -697,18 +697,20 @@
             // Sección: Datos generales
             html += '<tr class="sabana-section-header"><td colspan="9">📊 DATOS GENERALES</td></tr>';
             data.datos.forEach(dia => {
-                const cpl = dia.leads_creados > 0 ? (dia.inversion / dia.leads_creados) : 0;
+                const inversion = dia.inversion || 0;
+                const leadsCreados = dia.leads_creados || 0;
+                const cpl = (inversion > 0 && leadsCreados > 0) ? (inversion / leadsCreados) : 0;
                 html += `
                     <tr>
                         <td>${dia.fecha}</td>
-                        <td>${dia.leads_creados || 0}</td>
+                        <td>${leadsCreados}</td>
                         <td>${dia.llamadas_realizadas || 0}</td>
                         <td>${dia.reuniones_agendadas || 0}</td>
                         <td>${dia.reuniones_realizadas || 0}</td>
                         <td>${dia.clientes_con_reserva || 0}</td>
                         <td>${dia.reservas || 0}</td>
-                        <td>${formatCurrency(dia.inversion || 0)}</td>
-                        <td>${formatCurrency(cpl)}</td>
+                        <td>${formatCurrency(inversion)}</td>
+                        <td>${cpl > 0 ? formatCurrency(cpl) : '$0'}</td>
                     </tr>
                 `;
             });
