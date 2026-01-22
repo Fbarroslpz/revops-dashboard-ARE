@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard ARE - RevOps Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            border-color: #667eea;
+        }
+
+        .btn-apply {
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s;
+            height: fit-content;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            padding: 0.5rem 1.5rem;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            height: fit-content;
+        }
+
+        .btn-reset:hover {
+            background: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-card .label {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-card .trend {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .trend.positive {
+            color: #27ae60;
+        }
+
+        .trend.negative {
+            color: #e74c3c;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .setter-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .setter-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .setter-card h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .setter-card .badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .setter-card .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .setter-card .metric:last-child {
+            border-bottom: none;
+        }
+
+        .setter-card .metric-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .setter-card .metric-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stat-card .value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loading" id="loading">Cargando datos...</div>
+        <div id="dashboard" style="display: none;">
+            <div class="header">
+                <div>
+                    <h1>📊 Dashboard ARE - RevOps Analytics</h1>
+                    <p class="subtitle" id="lastUpdate">Cargando datos...</p>
+                </div>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="dateFrom">Fecha Desde</label>
+                        <input type="date" id="dateFrom">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateTo">Fecha Hasta</label>
+                        <input type="date" id="dateTo">
+                    </div>
+                    <div class="filter-group">
+                        <label for="quickFilter">Períodos Rápidos</label>
+                        <select id="quickFilter">
+                            <option value="">Personalizado</option>
+                            <option value="7">Últimos 7 días</option>
+                            <option value="15">Últimos 15 días</option>
+                            <option value="30" selected>Últimos 30 días</option>
+                            <option value="all">Todo el período</option>
+                        </select>
+                    </div>
+                    <button class="btn-apply" onclick="applyFilters()">Aplicar Filtros</button>
+                    <button class="btn-reset" onclick="resetFilters()">Resetear</button>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <div class="setter-cards" id="setterCards"></div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 id="leadsTitle">📈 Leads Creados</h3>
+                    <div class="chart-container">
+                        <canvas id="leadsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>📞 Reuniones Agendadas vs Realizadas</h3>
+                    <div class="chart-container">
+                        <canvas id="meetingsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 id="callsTitle">👥 Llamadas por Setter</h3>
+                    <div class="chart-container">
+                        <canvas id="callsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>🎯 Distribución de Reuniones Agendadas</h3>
+                    <div class="chart-container">
+                        <canvas id="showupChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>💰 Inversión en Campañas</h3>
+                    <div class="chart-container">
+                        <canvas id="inversionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>💵 Costo por Lead</h3>
+                    <div class="chart-container">
+                        <canvas id="costoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalData = null;
+        let filteredData = null;
+        let leadsChart, meetingsChart, callsChart, agendasChart, inversionChart, costoChart;
+
+        // Cargar datos desde GitHub
+        async function loadData() {
+            try {
+                const response = await fetch('./data/latest.json');
+                if (!response.ok) throw new Error('Error al cargar datos');
+                originalData = await response.json();
+                filteredData = JSON.parse(JSON.stringify(originalData));
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+
+                initializeDateFilters();
+                renderDashboard();
+            } catch (error) {
+                document.getElementById('loading').textContent = 'Error al cargar los datos: ' + error.message;
+            }
+        }
+
+        function initializeDateFilters() {
+            const dates = originalData.datos.map(d => d.fecha);
+            const minDate = dates[0];
+            const maxDate = dates[dates.length - 1];
+
+            document.getElementById('dateFrom').value = minDate;
+            document.getElementById('dateTo').value = maxDate;
+            document.getElementById('dateFrom').min = minDate;
+            document.getElementById('dateFrom').max = maxDate;
+            document.getElementById('dateTo').min = minDate;
+            document.getElementById('dateTo').max = maxDate;
+        }
+
+        function applyFilters() {
+            const quickFilter = document.getElementById('quickFilter').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+
+            let filtered = originalData.datos;
+
+            if (quickFilter === 'all') {
+                filtered = originalData.datos;
+            } else if (quickFilter && quickFilter !== '') {
+                const days = parseInt(quickFilter);
+                filtered = originalData.datos.slice(-days - 1, -1);
+            } else {
+                filtered = originalData.datos.filter(d => {
+                    return d.fecha >= dateFrom && d.fecha <= dateTo;
+                });
+            }
+
+            filteredData = {
+                ...originalData,
+                datos: filtered,
+                total_dias: filtered.length,
+                fecha_ultimo_dato: filtered.length > 0 ? filtered[filtered.length - 1].fecha : originalData.fecha_ultimo_dato
+            };
+
+            renderDashboard();
+        }
+
+        function resetFilters() {
+            document.getElementById('quickFilter').value = '30';
+            initializeDateFilters();
+            applyFilters();
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('es-CL', {
+                style: 'currency',
+                currency: 'CLP',
+                minimumFractionDigits: 0
+            }).format(value);
+        }
+
+        function renderDashboard() {
+            const data = filteredData;
+
+            document.getElementById('lastUpdate').textContent =
+                `Última actualización: ${data.fecha_actualizacion} | Total días: ${data.total_dias} | Datos hasta: ${data.fecha_ultimo_dato}`;
+
+            const totalLeads = data.datos.reduce((sum, d) => sum + d.leads_creados, 0);
+            const totalLlamadasRealizadas = data.datos.reduce((sum, d) => sum + d.llamadas_realizadas, 0);
+            const totalReunionesAgendadasDia = data.datos.reduce((sum, d) => sum + d.reuniones_agendadas_dia, 0);
+            const totalInversion = data.datos.reduce((sum, d) => sum + d.inversion_campanas, 0);
+            const costoPromedioLead = totalLeads > 0 ? totalInversion / totalLeads : 0;
+
+            const totalReunionesAgendadas = data.datos.reduce((sum, d) => sum + d.totales.reuniones_agendadas, 0);
+            const totalReunionesRealizadas = data.datos.reduce((sum, d) => sum + d.totales.reuniones_realizadas, 0);
+            const showUpRate = totalReunionesAgendadas > 0 ? (totalReunionesRealizadas / totalReunionesAgendadas * 100).toFixed(1) : 0;
+            const tasaConversionDia = totalLlamadasRealizadas > 0 ? (totalReunionesAgendadasDia / totalLlamadasRealizadas * 100).toFixed(1) : 0;
+
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="label">Total Leads</div>
+                    <div class="value">${totalLeads}</div>
+                    <div class="trend positive">↗ ${data.total_dias} días</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Inversión Total</div>
+                    <div class="value">${formatCurrency(totalInversion)}</div>
+                    <div class="trend">Período completo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Costo por Lead Promedio</div>
+                    <div class="value">${formatCurrency(costoPromedioLead)}</div>
+                    <div class="trend">Período completo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Tasa Conversión Día</div>
+                    <div class="value">${tasaConversionDia}%</div>
+                    <div class="trend ${tasaConversionDia >= 20 ? 'positive' : 'negative'}">${tasaConversionDia >= 20 ? '✓ Objetivo alcanzado' : '⚠ Por debajo del objetivo'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Reuniones Agendadas</div>
+                    <div class="value">${totalReunionesAgendadas}</div>
+                    <div class="trend">Período completo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Reuniones Realizadas</div>
+                    <div class="value">${totalReunionesRealizadas}</div>
+                    <div class="trend">Período completo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Tasa de Agendamiento Total</div>
+                    <div class="value">${showUpRate}%</div>
+                    <div class="trend ${showUpRate >= 60 ? 'positive' : 'negative'}">${showUpRate >= 60 ? '✓ Objetivo alcanzado' : '⚠ Por debajo del objetivo'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Llamadas Realizadas</div>
+                    <div class="value">${totalLlamadasRealizadas}</div>
+                    <div class="trend">Del día</div>
+                </div>
+            `;
+
+            const setterTotals = {
+                Daniela: { llamadas: 0, agendadas: 0 },
+                Teresa: { llamadas: 0, agendadas: 0 },
+                Matias: { llamadas: 0, agendadas: 0 },
+                Robot: { llamadas: 0, agendadas: 0 }
+            };
+
+            data.datos.forEach(dia => {
+                Object.keys(setterTotals).forEach(setter => {
+                    setterTotals[setter].llamadas += dia.reuniones[setter].llamadas;
+                    setterTotals[setter].agendadas += dia.reuniones[setter].agendadas;
+                });
+            });
+
+            const setterCards = document.getElementById('setterCards');
+            const setterColors = {
+                'Daniela': '#e74c3c',
+                'Teresa': '#3498db',
+                'Matias': '#2ecc71',
+                'Robot': '#9b59b6'
+            };
+
+            setterCards.innerHTML = Object.keys(setterTotals).map(setter => {
+                const stats = setterTotals[setter];
+                const conversionRate = stats.llamadas > 0 ? (stats.agendadas / stats.llamadas * 100).toFixed(1) : 0;
+                return `
+                    <div class="setter-card">
+                        <h4>
+                            <span class="badge" style="background: ${setterColors[setter]}"></span>
+                            ${setter}
+                        </h4>
+                        <div class="metric">
+                            <span class="metric-label">Llamadas</span>
+                            <span class="metric-value">${stats.llamadas}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Reuniones Agendadas</span>
+                            <span class="metric-value">${stats.agendadas}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Tasa de Conversión</span>
+                            <span class="metric-value">${conversionRate}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const chartData = data.datos.filter(d => d.leads_creados > 0);
+            const last7Days = chartData.slice(-7);
+
+            document.getElementById('leadsTitle').textContent = `📈 Leads Creados (${data.total_dias} días)`;
+            document.getElementById('callsTitle').textContent = `👥 Llamadas por Setter (${Math.min(7, last7Days.length)} días)`;
+
+            if (leadsChart) leadsChart.destroy();
+            leadsChart = new Chart(document.getElementById('leadsChart'), {
+                type: 'line',
+                data: {
+                    labels: chartData.map(d => d.fecha.slice(5)),
+                    datasets: [{
+                        label: 'Leads Creados',
+                        data: chartData.map(d => d.leads_creados),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            if (meetingsChart) meetingsChart.destroy();
+            meetingsChart = new Chart(document.getElementById('meetingsChart'), {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(d => d.fecha.slice(5)),
+                    datasets: [
+                        {
+                            label: 'Agendadas',
+                            data: chartData.map(d => d.totales.reuniones_agendadas),
+                            backgroundColor: 'rgba(52, 152, 219, 0.6)'
+                        },
+                        {
+                            label: 'Realizadas',
+                            data: chartData.map(d => d.totales.reuniones_realizadas),
+                            backgroundColor: 'rgba(46, 204, 113, 0.6)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            if (callsChart) callsChart.destroy();
+            callsChart = new Chart(document.getElementById('callsChart'), {
+                type: 'bar',
+                data: {
+                    labels: last7Days.map(d => d.fecha.slice(5)),
+                    datasets: Object.keys(setterColors).map(setter => ({
+                        label: setter,
+                        data: last7Days.map(d => d.reuniones[setter].llamadas),
+                        backgroundColor: setterColors[setter] + '99'
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true }
+                    }
+                }
+            });
+
+            if (agendasChart) agendasChart.destroy();
+            agendasChart = new Chart(document.getElementById('showupChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(setterTotals),
+                    datasets: [{
+                        label: 'Reuniones Agendadas',
+                        data: Object.keys(setterTotals).map(setter => setterTotals[setter].agendadas),
+                        backgroundColor: Object.values(setterColors)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            if (inversionChart) inversionChart.destroy();
+            inversionChart = new Chart(document.getElementById('inversionChart'), {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(d => d.fecha.slice(5)),
+                    datasets: [{
+                        label: 'Inversión (CLP)',
+                        data: chartData.map(d => d.inversion_campanas),
+                        backgroundColor: 'rgba(155, 89, 182, 0.6)',
+                        borderColor: '#9b59b6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (costoChart) costoChart.destroy();
+            costoChart = new Chart(document.getElementById('costoChart'), {
+                type: 'line',
+                data: {
+                    labels: chartData.map(d => d.fecha.slice(5)),
+                    datasets: [{
+                        label: 'Costo por Lead (CLP)',
+                        data: chartData.map(d => d.costo_por_lead),
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+
+            document.getElementById('quickFilter').addEventListener('change', (e) => {
+                if (e.target.value !== '') {
+                    applyFilters();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
