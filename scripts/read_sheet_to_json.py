@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script para leer el Google Sheet y generar latest.json
-Lee directamente desde el Sheet público usando la API de Google Sheets
+Extrae TODOS los datos acumulados desde el inicio hasta AYER
 
 Autor: Felipe Barros - Vulpes Consulting
 Fecha: Enero 2026
@@ -12,7 +12,7 @@ import sys
 import json
 import gspread
 from google.oauth2.service_account import Credentials
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ID del Google Sheet
 SHEET_ID = "1E15l2Ac6EJsMEWS5SaOJnQHkNs6VQISBF1XfZ4NfrK4"
@@ -59,27 +59,70 @@ def read_sheet_with_service_account():
         sys.exit(1)
 
 
-def find_last_column_with_data(rows):
-    """Encuentra la última columna que tiene datos (de derecha a izquierda)"""
-    # La fila 2 tiene las fechas
-    date_row = rows[1] if len(rows) > 1 else []
-
-    # Buscar la última celda no vacía
-    last_col = -1
-    for i in range(len(date_row) - 1, -1, -1):
-        if date_row[i].strip():
-            last_col = i
-            break
-
-    return last_col
-
-
 def parse_date(date_str):
     """Parsea fecha en formato DD/MM/YYYY"""
     try:
         return datetime.strptime(date_str.strip(), "%d/%m/%Y")
     except:
         return None
+
+
+def find_yesterday_column(rows, yesterday):
+    """
+    Encuentra la última columna que contiene datos hasta AYER
+    Retorna el índice de la columna de ayer (o la última disponible)
+    """
+    date_row = rows[1] if len(rows) > 1 else []
+
+    last_valid_col = -1
+
+    for i in range(len(date_row)):
+        cell = date_row[i].strip()
+        if not cell:
+            continue
+
+        fecha = parse_date(cell)
+        if fecha:
+            # Si la fecha es <= ayer, es válida
+            if fecha.date() <= yesterday.date():
+                last_valid_col = i
+            # Si la fecha es > ayer, paramos
+            elif fecha.date() > yesterday.date():
+                break
+
+    return last_valid_col
+
+
+def extract_all_data_until_yesterday(rows, last_col_index):
+    """
+    Extrae TODOS los datos desde el inicio hasta la columna de AYER
+    Retorna una lista con todos los días
+    """
+    all_days = []
+
+    # Empezar desde la primera columna con fecha (normalmente columna 0 o 1)
+    # Buscar la primera columna que tenga una fecha válida
+    date_row = rows[1] if len(rows) > 1 else []
+    first_col = -1
+
+    for i in range(len(date_row)):
+        if parse_date(date_row[i]):
+            first_col = i
+            break
+
+    if first_col == -1:
+        print("❌ No se encontró ninguna columna con fechas válidas")
+        return []
+
+    print(f"📅 Extrayendo datos desde columna {first_col} hasta {last_col_index}")
+
+    # Extraer datos de cada columna
+    for col_idx in range(first_col, last_col_index + 1):
+        data = extract_data_from_column(rows, col_idx)
+        if data:
+            all_days.append(data)
+
+    return all_days
 
 
 def extract_data_from_column(rows, col_index):
@@ -95,11 +138,13 @@ def extract_data_from_column(rows, col_index):
         if not fecha:
             return None
 
-        # Extraer valores (recordar que en CSV las filas son 0-indexed)
+        # Extraer valores (recordar que las filas son 0-indexed)
         def get_value(row_index):
             try:
-                val = rows[row_index][col_index].strip()
-                return int(val) if val else 0
+                if row_index < len(rows) and col_index < len(rows[row_index]):
+                    val = rows[row_index][col_index].strip()
+                    return int(val) if val else 0
+                return 0
             except:
                 return 0
 
@@ -129,7 +174,7 @@ def extract_data_from_column(rows, col_index):
             "reuniones": {
                 "Daniela": {
                     "agendadas": dani_reuniones,
-                    "realizadas": dani_reuniones,  # Por ahora no tenemos el dato de realizadas por setter
+                    "realizadas": dani_reuniones,
                     "llamadas": dani_llamadas
                 },
                 "Teresa": {
@@ -159,63 +204,52 @@ def extract_data_from_column(rows, col_index):
         return data
 
     except Exception as e:
-        print(f"❌ Error extrayendo datos de columna {col_index}: {e}")
+        print(f"⚠️  Error extrayendo datos de columna {col_index}: {e}")
         return None
-
-
-def find_column_for_date(rows, target_date):
-    """Busca la columna que corresponde a una fecha específica"""
-    # La fila 2 (índice 1) tiene las fechas
-    date_row = rows[1] if len(rows) > 1 else []
-
-    target_str = target_date.strftime("%d/%m/%Y")
-
-    for i, cell in enumerate(date_row):
-        cell_date = parse_date(cell)
-        if cell_date and cell_date.date() == target_date.date():
-            return i
-
-    return -1
 
 
 def main():
     print("=" * 80)
     print("🗄️  LEYENDO GOOGLE SHEET - INFORME DIARIO ARE")
+    print("📊 Extrayendo TODOS los datos acumulados hasta AYER")
     print("=" * 80)
 
     # Calcular fecha de ayer
-    from datetime import timedelta
     yesterday = datetime.now() - timedelta(days=1)
-    print(f"\n📅 Buscando datos para: {yesterday.strftime('%d/%m/%Y')} (AYER)")
+    print(f"\n📅 Fecha límite: {yesterday.strftime('%d/%m/%Y')} (AYER)")
+    print(f"📊 Se extraerán TODOS los datos desde el inicio hasta esta fecha")
 
     # Leer sheet
     rows = read_sheet_with_service_account()
 
-    # Buscar columna para ayer
-    target_col = find_column_for_date(rows, yesterday)
+    # Encontrar la última columna válida (hasta ayer)
+    last_col = find_yesterday_column(rows, yesterday)
 
-    if target_col == -1:
-        print(f"⚠️ No se encontraron datos para {yesterday.strftime('%d/%m/%Y')}")
-        print("📝 Intentando con la última columna disponible...")
+    if last_col == -1:
+        print("❌ No se encontraron datos hasta ayer")
+        sys.exit(1)
 
-        # Fallback: usar última columna con datos
-        target_col = find_last_column_with_data(rows)
+    fecha_limite = rows[1][last_col] if len(rows) > 1 else "?"
+    print(f"✅ Última fecha válida encontrada: {fecha_limite} (columna {last_col})")
 
-        if target_col == -1:
-            print("❌ No se encontraron datos en el sheet")
-            sys.exit(1)
+    # Extraer TODOS los datos desde el inicio hasta ayer
+    all_data = extract_all_data_until_yesterday(rows, last_col)
 
-        fecha_encontrada = rows[1][target_col] if len(rows) > 1 else "?"
-        print(f"✅ Usando última fecha disponible: {fecha_encontrada}")
-    else:
-        print(f"✅ Encontrada columna {target_col} con datos de ayer")
-
-    # Extraer datos de la columna objetivo
-    data = extract_data_from_column(rows, target_col)
-
-    if not data:
+    if not all_data:
         print("❌ No se pudieron extraer los datos")
         sys.exit(1)
+
+    print(f"\n✅ Se extrajeron {len(all_data)} días de datos")
+    print(f"📅 Desde: {all_data[0]['fecha']}")
+    print(f"📅 Hasta: {all_data[-1]['fecha']}")
+
+    # Crear estructura final
+    output_data = {
+        "fecha_actualizacion": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "fecha_ultimo_dato": all_data[-1]['fecha'],
+        "total_dias": len(all_data),
+        "datos": all_data
+    }
 
     # Crear carpeta data si no existe
     os.makedirs('data', exist_ok=True)
@@ -223,13 +257,12 @@ def main():
     # Guardar en latest.json
     output_file = 'data/latest.json'
     with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        json.dump(output_data, f, indent=2, ensure_ascii=False)
 
     print(f"\n✅ Datos guardados en: {output_file}")
-    print(f"📊 Fecha procesada: {data['fecha']}")
-    print(f"📈 Leads creados: {data['leads_creados']}")
-    print(f"📞 Total reuniones agendadas: {data['totales']['reuniones_agendadas']}")
-    print(f"✅ Total reuniones realizadas: {data['totales']['reuniones_realizadas']}")
+    print(f"📊 Total días procesados: {len(all_data)}")
+    print(f"📈 Último día: {all_data[-1]['fecha']}")
+    print(f"📞 Leads totales último día: {all_data[-1]['leads_creados']}")
 
     print("\n" + "=" * 80)
     print("✅ PROCESO COMPLETADO EXITOSAMENTE")
