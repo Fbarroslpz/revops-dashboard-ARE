@@ -730,8 +730,8 @@
 
             // Robot
             html += generarFila('Robot', [], true);
-            html += generarFila('ROBOT Llamadas realiz', data.datos.map(d => d.reuniones?.Robot?.llamadas || 0));
-            html += generarFila('ROBOT reuniones agend', data.datos.map(d => d.reuniones?.Robot?.agendadas || 0));
+            html += generarFila('ROBOT Llamadas realizadas', data.datos.map(d => d.reuniones?.Robot?.llamadas || 0));
+            html += generarFila('ROBOT reuniones agendadas', data.datos.map(d => d.reuniones?.Robot?.agendadas || 0));
 
             // SECCIÓN: Leads que entraron hoy
             html += generarFila('📥 Leads que entraron hoy', [], true);
