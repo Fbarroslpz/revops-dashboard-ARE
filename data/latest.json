@@ -1,5 +1,5 @@
 {
-  "fecha_actualizacion": "2026-01-26 11:28:41",
+  "fecha_actualizacion": "2026-01-26 12:28:20",
   "fecha_ultimo_dato": "2026-01-25",
   "total_dias": 35,
   "datos": [
@@ -1160,8 +1160,8 @@
       "leads_creados": 69,
       "llamadas_realizadas": 69,
       "reuniones_agendadas_dia": 5,
-      "inversion_campanas": 202545,
-      "costo_por_lead": 2935.0,
+      "inversion_campanas": 259605,
+      "costo_por_lead": 3762.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 9,
@@ -1179,25 +1179,25 @@
           "llamadas": 0
         },
         "Robot": {
-          "agendadas": 0,
-          "realizadas": 0,
+          "agendadas": 1,
+          "realizadas": 1,
           "llamadas": 69
         }
       },
       "totales": {
         "reuniones_agendadas": 45,
         "reuniones_realizadas": 3,
-        "clientes_con_reserva": 0,
-        "reservas": 0
+        "clientes_con_reserva": 1,
+        "reservas": 1
       }
     },
     {
       "fecha": "2026-01-24",
-      "leads_creados": 0,
-      "llamadas_realizadas": 0,
-      "reuniones_agendadas_dia": 0,
-      "inversion_campanas": 0,
-      "costo_por_lead": 0.0,
+      "leads_creados": 81,
+      "llamadas_realizadas": 81,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 267210,
+      "costo_por_lead": 3299.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -1215,25 +1215,25 @@
           "llamadas": 0
         },
         "Robot": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 2,
+          "realizadas": 2,
+          "llamadas": 81
         }
       },
       "totales": {
         "reuniones_agendadas": 0,
         "reuniones_realizadas": 0,
-        "clientes_con_reserva": 0,
-        "reservas": 0
+        "clientes_con_reserva": 1,
+        "reservas": 1
       }
     },
     {
       "fecha": "2026-01-25",
-      "leads_creados": 0,
-      "llamadas_realizadas": 0,
-      "reuniones_agendadas_dia": 0,
-      "inversion_campanas": 0,
-      "costo_por_lead": 0.0,
+      "leads_creados": 102,
+      "llamadas_realizadas": 102,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 345739,
+      "costo_por_lead": 3390.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -1251,9 +1251,9 @@
           "llamadas": 0
         },
         "Robot": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 4,
+          "realizadas": 4,
+          "llamadas": 102
         }
       },
       "totales": {
