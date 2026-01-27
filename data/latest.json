@@ -1,5 +1,5 @@
 {
-  "fecha_actualizacion": "2026-01-27 13:57:21",
+  "fecha_actualizacion": "2026-01-27 14:00:12",
   "fecha_ultimo_dato": "2026-01-26",
   "total_dias": 36,
   "datos": [
@@ -1268,8 +1268,8 @@
       "leads_creados": 87,
       "llamadas_realizadas": 87,
       "reuniones_agendadas_dia": 17,
-      "inversion_campanas": 0,
-      "costo_por_lead": 0.0,
+      "inversion_campanas": 374145,
+      "costo_por_lead": 4301.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
