@@ -1,7 +1,7 @@
 {
-  "fecha_actualizacion": "2026-02-01 13:57:47",
-  "fecha_ultimo_dato": "2026-01-31",
-  "total_dias": 41,
+  "fecha_actualizacion": "2026-02-02 12:36:28",
+  "fecha_ultimo_dato": "2026-02-01",
+  "total_dias": 42,
   "datos": [
     {
       "fecha": "2025-12-22",
@@ -1412,8 +1412,8 @@
       "leads_creados": 80,
       "llamadas_realizadas": 80,
       "reuniones_agendadas_dia": 6,
-      "inversion_campanas": 238249,
-      "costo_por_lead": 2978.0,
+      "inversion_campanas": 298247,
+      "costo_por_lead": 3728.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 4,
@@ -1445,11 +1445,11 @@
     },
     {
       "fecha": "2026-01-31",
-      "leads_creados": 0,
-      "llamadas_realizadas": 0,
-      "reuniones_agendadas_dia": 0,
-      "inversion_campanas": 0,
-      "costo_por_lead": 0.0,
+      "leads_creados": 81,
+      "llamadas_realizadas": 81,
+      "reuniones_agendadas_dia": 2,
+      "inversion_campanas": 320348,
+      "costo_por_lead": 3955.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 0,
@@ -1467,13 +1467,49 @@
           "llamadas": 0
         },
         "Robot": {
-          "agendadas": 0,
-          "realizadas": 0,
-          "llamadas": 0
+          "agendadas": 1,
+          "realizadas": 1,
+          "llamadas": 71
         }
       },
       "totales": {
         "reuniones_agendadas": 4,
+        "reuniones_realizadas": 0,
+        "clientes_con_reserva": 0,
+        "reservas": 0
+      }
+    },
+    {
+      "fecha": "2026-02-01",
+      "leads_creados": 119,
+      "llamadas_realizadas": 119,
+      "reuniones_agendadas_dia": 4,
+      "inversion_campanas": 375894,
+      "costo_por_lead": 3159.0,
+      "reuniones": {
+        "Daniela": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        },
+        "Teresa": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        },
+        "Matias": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        },
+        "Robot": {
+          "agendadas": 4,
+          "realizadas": 4,
+          "llamadas": 119
+        }
+      },
+      "totales": {
+        "reuniones_agendadas": 0,
         "reuniones_realizadas": 0,
         "clientes_con_reserva": 0,
         "reservas": 0
