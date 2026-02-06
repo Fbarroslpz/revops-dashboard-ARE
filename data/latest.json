@@ -1,7 +1,7 @@
 {
-  "fecha_actualizacion": "2026-02-05 14:14:15",
-  "fecha_ultimo_dato": "2026-02-04",
-  "total_dias": 45,
+  "fecha_actualizacion": "2026-02-06 13:43:09",
+  "fecha_ultimo_dato": "2026-02-05",
+  "total_dias": 46,
   "datos": [
     {
       "fecha": "2025-12-22",
@@ -1589,11 +1589,11 @@
     },
     {
       "fecha": "2026-02-04",
-      "leads_creados": 61,
+      "leads_creados": 62,
       "llamadas_realizadas": 62,
       "reuniones_agendadas_dia": 8,
       "inversion_campanas": 236540,
-      "costo_por_lead": 3878.0,
+      "costo_por_lead": 3815.0,
       "reuniones": {
         "Daniela": {
           "agendadas": 8,
@@ -1619,6 +1619,42 @@
       "totales": {
         "reuniones_agendadas": 32,
         "reuniones_realizadas": 11,
+        "clientes_con_reserva": 2,
+        "reservas": 2
+      }
+    },
+    {
+      "fecha": "2026-02-05",
+      "leads_creados": 85,
+      "llamadas_realizadas": 85,
+      "reuniones_agendadas_dia": 10,
+      "inversion_campanas": 269329,
+      "costo_por_lead": 3169.0,
+      "reuniones": {
+        "Daniela": {
+          "agendadas": 10,
+          "realizadas": 10,
+          "llamadas": 56
+        },
+        "Teresa": {
+          "agendadas": 7,
+          "realizadas": 7,
+          "llamadas": 57
+        },
+        "Matias": {
+          "agendadas": 9,
+          "realizadas": 9,
+          "llamadas": 47
+        },
+        "Robot": {
+          "agendadas": 3,
+          "realizadas": 3,
+          "llamadas": 85
+        }
+      },
+      "totales": {
+        "reuniones_agendadas": 35,
+        "reuniones_realizadas": 7,
         "clientes_con_reserva": 0,
         "reservas": 0
       }
