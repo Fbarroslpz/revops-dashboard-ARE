@@ -1,5 +1,5 @@
 {
-  "fecha_actualizacion": "2026-02-17 13:47:59",
+  "fecha_actualizacion": "2026-02-17 14:27:43",
   "fecha_ultimo_dato": "2026-02-16",
   "total_dias": 57,
   "datos": [
@@ -2051,8 +2051,8 @@
       "totales": {
         "reuniones_agendadas": 32,
         "reuniones_realizadas": 8,
-        "clientes_con_reserva": 0,
-        "reservas": 0
+        "clientes_con_reserva": 1,
+        "reservas": 1
       }
     }
   ]
