@@ -1,7 +1,7 @@
 {
-  "fecha_actualizacion": "2026-11-01 18:28:30",
-  "fecha_ultimo_dato": "2026-10-31",
-  "total_dias": 314,
+  "fecha_actualizacion": "2026-11-02 21:53:13",
+  "fecha_ultimo_dato": "2026-11-01",
+  "total_dias": 315,
   "datos": [
     {
       "fecha": "2025-12-22",
@@ -11273,6 +11273,42 @@
     },
     {
       "fecha": "2026-10-31",
+      "leads_creados": 0,
+      "llamadas_realizadas": 0,
+      "reuniones_agendadas_dia": 0,
+      "inversion_campanas": 0,
+      "costo_por_lead": 0.0,
+      "reuniones": {
+        "Daniela": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        },
+        "Teresa": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        },
+        "Matias": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        },
+        "Robot": {
+          "agendadas": 0,
+          "realizadas": 0,
+          "llamadas": 0
+        }
+      },
+      "totales": {
+        "reuniones_agendadas": 0,
+        "reuniones_realizadas": 0,
+        "clientes_con_reserva": 0,
+        "reservas": 0
+      }
+    },
+    {
+      "fecha": "2026-11-01",
       "leads_creados": 0,
       "llamadas_realizadas": 0,
       "reuniones_agendadas_dia": 0,
